@@ -26,8 +26,8 @@ export function Welcome() {
           </div>
           <div className="absolute right-0 bottom-0 aspect-square w-[52%] overflow-hidden rounded-[2rem] border-8 border-cream-50 shadow-lift">
             <Image
-              src="/images/cabins/wild-columbine.jpg"
-              alt="Wild Columbine interior with a stone wood-burning fireplace"
+              src="/images/cabins/emerald-forest-interior.webp"
+              alt="Emerald Forest interior with a freestanding double Jacuzzi beside the fireplace"
               fill
               sizes="(min-width: 1024px) 25vw, 50vw"
               className="object-cover"

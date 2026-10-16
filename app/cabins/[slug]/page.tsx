@@ -17,6 +17,8 @@ import { cabins, getCabin, photoUrl } from "@/data/cabins";
 import { site } from "@/data/site";
 import { formatTime } from "@/lib/booking/dates";
 import { amenityIcon } from "@/lib/amenity-icons";
+import { getReviews, isHighlight } from "@/lib/reviews";
+import { ReviewCard } from "@/components/reviews/ReviewCard";
 import { parseSearch, searchQuery } from "@/lib/booking/search-params";
 
 export function generateStaticParams() {
@@ -57,6 +59,11 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
   if (!cabin) notFound();
   const search = parseSearch(await searchParams);
   const d = cabin.details;
+  // Live rating and reviews from OwnerRez; fall back to the listing figures if the widget is unreachable.
+  const reviewData = await getReviews({ cabinSlug: cabin.slug, pageSize: 20 });
+  const rating = reviewData.average ?? d.rating;
+  const reviewCount = reviewData.total || d.reviewCount;
+  const featuredReviews = reviewData.reviews.filter(isHighlight).slice(0, 4);
   const photos = d.photos.map((id) => photoUrl(id));
   const guestQuery = searchQuery({ checkin: search.checkin, checkout: search.checkout, adults: search.adults, children: search.children, pets: search.pets });
   const similar = [...cabins.filter((c) => c.slug !== cabin.slug)]
@@ -64,7 +71,7 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
     .slice(0, 3);
   const [lat, lng] = d.coords ?? [];
   const mapBox = lat && lng ? `${lng - 0.02},${lat - 0.012},${lng + 0.02},${lat + 0.012}` : null;
-  const topRated = d.rating >= 4.95;
+  const topRated = rating >= 4.95;
 
   const stats = [
     { icon: Users, value: String(d.maxGuests), label: d.maxGuests === 1 ? "guest" : "guests" },
@@ -86,8 +93,8 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
             childrenAllowed: d.childrenAllowed,
             petsAllowed: d.petsAllowed,
             rateRange: d.rateRange,
-            rating: d.rating,
-            reviewCount: d.reviewCount,
+            rating,
+            reviewCount,
           },
         }}
         initial={search}
@@ -109,8 +116,8 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
               <p className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-600">
                 <a href="#reviews" className="flex items-center gap-1 font-semibold text-forest-900 hover:underline">
                   <Star className="size-4 fill-ember-500 text-ember-500" aria-hidden />
-                  {d.rating.toFixed(2)}
-                  <span className="font-normal text-ink-600 underline underline-offset-2">· {d.reviewCount} reviews</span>
+                  {rating.toFixed(2)}
+                  <span className="font-normal text-ink-600 underline underline-offset-2">· {reviewCount} reviews</span>
                 </a>
                 {topRated && (
                   <span className="flex items-center gap-1 rounded-full bg-rose-500/10 px-2.5 py-1 text-xs font-bold text-rose-500">
@@ -247,23 +254,38 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
               <Section id="reviews" title="Guest reviews">
                 <div className="flex flex-col gap-6 rounded-3xl bg-forest-900 p-6 text-cream-50 sm:flex-row sm:items-center sm:p-8">
                   <div className="flex items-center gap-5">
-                    <span className="font-serif text-6xl leading-none">{d.rating.toFixed(2)}</span>
+                    <span className="font-serif text-6xl leading-none">{rating.toFixed(2)}</span>
                     <div>
-                      <div className="flex text-ember-300" aria-label={`${d.rating} out of 5 stars`}>
+                      <div className="flex text-ember-300" aria-label={`${rating} out of 5 stars`}>
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star key={i} className="size-4 fill-current" aria-hidden />
                         ))}
                       </div>
-                      <p className="mt-1.5 text-sm text-mist-200/80">{d.reviewCount} verified stays</p>
+                      <p className="mt-1.5 text-sm text-mist-200/80">{reviewCount} verified reviews</p>
                     </div>
                   </div>
                   {topRated && (
                     <p className="flex items-start gap-3 border-cream-50/15 text-sm leading-relaxed text-mist-200/90 sm:border-l sm:pl-6">
                       <Award className="mt-0.5 size-5 shrink-0 text-ember-300" aria-hidden />
-                      Top rated: one of our highest-rated cabins, based on {d.reviewCount} guest reviews.
+                      Top rated: one of our highest-rated cabins, based on {reviewCount} guest reviews.
                     </p>
                   )}
                 </div>
+                {featuredReviews.length > 0 && (
+                  <ul className="mt-6 grid gap-5 sm:grid-cols-2">
+                    {featuredReviews.map((r) => (
+                      <li key={r.id}>
+                        <ReviewCard review={r} showCabin={false} clamp />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <Link
+                  href={`/reviews?cabin=${cabin.slug}`}
+                  className="mt-6 inline-flex rounded-full border border-forest-800/25 px-5 py-3 text-sm font-semibold text-forest-900 transition-colors hover:bg-forest-900 hover:text-cream-50"
+                >
+                  Read all {reviewCount} reviews
+                </Link>
               </Section>
 
               <div className="flex flex-col items-start justify-between gap-4 rounded-3xl bg-linen-100 p-6 sm:flex-row sm:items-center">

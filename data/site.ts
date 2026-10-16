@@ -12,6 +12,7 @@ export const site = {
   ownerRez: {
     bookingWidgetId: "8b3dab90c59248d19140b8338a8fd37c",
     searchWidgetId: "be107abb24d74b659d17b466d38f8bc5",
+    reviewsWidgetId: "56bb2b5c772a4accaa6aeb448a4525dd",
   },
   socials: {
     facebook: "https://www.facebook.com/vacaytothesmokies",
@@ -24,7 +25,7 @@ export const navLinks = [
   { label: "Hidden Gems", href: "/hidden-gems" },
   { label: "Amenities", href: "/#amenities" },
   { label: "Explore", href: "/#explore" },
-  { label: "Reviews", href: "/#reviews" },
+  { label: "Reviews", href: "/reviews" },
   { label: "Smoky Mountain Guide", href: "/smoky-mountain-guide" },
   { label: "Contact", href: "/contact" },
 ] as const;

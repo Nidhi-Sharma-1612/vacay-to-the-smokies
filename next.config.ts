@@ -22,7 +22,6 @@ const nextConfig: NextConfig = {
       // Booking and payment now finish in OwnerRez's secure checkout.
       { source: "/checkout", destination: "/cabins", permanent: false },
       { source: "/map", destination: "/cabins", permanent: true },
-      { source: "/reviews", destination: "/#reviews", permanent: true },
       { source: "/privacypolicy-573991779", destination: "/policies", permanent: true },
     ];
   },

@@ -3,7 +3,10 @@ export type Attraction = {
   distance: string;
   description: string;
   image: string;
-  credit: string;
+  /** Attribution for licensed photos; omitted for the owner's own images. */
+  credit?: string;
+  /** CSS object-position for the card crop (default centered). */
+  focus?: string;
 };
 
 // Photos from Wikimedia Commons; credits are shown in the footer.
@@ -29,8 +32,9 @@ export const attractions: Attraction[] = [
     distance: "Steps away",
     description:
       "Dinner shows, museums, go-karts and trolley stops, right outside the door of our Parkway bungalows.",
-    image: "/images/explore/pigeon-forge.jpg",
-    credit: "Pigeon Forge Parkway · Wikimedia Commons, CC BY-SA 4.0",
+    image: "/images/explore/pigeon-forge.jpeg",
+    // The photo has a "Pigeon Forge Parkway, US 441" label on its left; keep it in the tall card crop.
+    focus: "left center",
   },
   {
     name: "Dollywood",

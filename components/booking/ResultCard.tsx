@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Bath, BedDouble, Star, Users } from "lucide-react";
 import type { CabinWithDetails } from "@/data/cabins";
-import { usd } from "@/lib/booking/dates";
+import { getRatingSummary } from "@/lib/reviews";
 import type { Quote } from "@/lib/booking/types";
 
 const badgeTones = {
@@ -18,7 +18,11 @@ type Props = {
   unavailableReason?: string;
 };
 
-export function ResultCard({ cabin, href, quote, unavailableReason }: Props) {
+export async function ResultCard({ cabin, href, quote, unavailableReason }: Props) {
+  // Live OwnerRez rating, falling back to the saved listing figures.
+  const live = await getRatingSummary(cabin.slug);
+  const rating = live?.rating ?? cabin.details.rating;
+  const reviewCount = live?.count ?? cabin.details.reviewCount;
   const muted = Boolean(unavailableReason);
   return (
     <article
@@ -56,8 +60,8 @@ export function ResultCard({ cabin, href, quote, unavailableReason }: Props) {
           </div>
           <p className="mt-1 flex shrink-0 items-center gap-1 text-sm font-semibold text-forest-900">
             <Star className="size-4 fill-ember-500 text-ember-500" aria-hidden />
-            {cabin.details.rating.toFixed(2)}
-            <span className="font-normal text-ink-600">({cabin.details.reviewCount})</span>
+            {rating.toFixed(2)}
+            <span className="font-normal text-ink-600">({reviewCount})</span>
           </p>
         </div>
 
@@ -87,21 +91,9 @@ export function ResultCard({ cabin, href, quote, unavailableReason }: Props) {
         <div className="mt-auto flex items-end justify-between gap-4 border-t border-linen-200 pt-5">
           {muted ? (
             <p className="text-sm leading-snug text-ink-600">{unavailableReason}</p>
-          ) : quote ? (
-            <div>
-              <p className="font-serif text-2xl font-medium text-forest-900">{usd(quote.total)}</p>
-              <p className="text-sm text-ink-600">
-                total · {quote.nights} {quote.nights === 1 ? "night" : "nights"} · incl. fees & taxes
-              </p>
-            </div>
           ) : (
-            <div>
-              <p className="text-sm text-ink-600">From</p>
-              <p className="font-serif text-2xl font-medium text-forest-900">
-                {usd(cabin.details.rateRange.min)}
-                <span className="font-sans text-sm font-normal text-ink-600"> / night</span>
-              </p>
-            </div>
+            // Prices appear only in the cabin page's booking card, once dates are chosen.
+            <p className="text-sm leading-snug text-ink-600">{quote ? "Available for your dates" : "Choose dates to see your price"}</p>
           )}
           <Link
             href={href}

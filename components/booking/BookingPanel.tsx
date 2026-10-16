@@ -168,17 +168,14 @@ function PriceHeading() {
   const { cabin, quote } = useStay();
   return (
     <div className="mb-5 flex items-baseline justify-between gap-4">
+      {/* Only real OwnerRez totals are shown, and only after dates are chosen. */}
       {quote.status === "ready" ? (
         <p>
           <span className="font-serif text-3xl text-forest-900">{usd(quote.quote.total)}</span>
           <span className="text-ink-600"> total</span>
         </p>
       ) : (
-        <p>
-          <span className="text-sm text-ink-600">From </span>
-          <span className="font-serif text-3xl text-forest-900">{usd(cabin.details.rateRange.min)}</span>
-          <span className="text-ink-600"> / night</span>
-        </p>
+        <p className="font-serif text-2xl text-forest-900">Your stay</p>
       )}
       <p className="flex items-center gap-1 text-sm font-semibold text-forest-900">
         <Star className="size-4 fill-ember-500 text-ember-500" aria-hidden />

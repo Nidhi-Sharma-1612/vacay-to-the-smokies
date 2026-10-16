@@ -1,16 +1,19 @@
 import Image from "next/image";
 import { Heart } from "lucide-react";
 import { site } from "@/data/site";
+import { getRatingSummary } from "@/lib/reviews";
 import { Reveal } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
 
-const stats = [
-  { value: `${site.rating}★`, label: "Average guest rating" },
-  { value: `${site.reviewCount}+`, label: "Happy guest reviews" },
-  { value: "10 min", label: "To Dollywood & the Parkway" },
-];
+export async function Welcome() {
+  // Live overall rating from OwnerRez, falling back to the saved figures.
+  const live = await getRatingSummary();
+  const stats = [
+    { value: `${(live?.rating ?? site.rating).toFixed(2)}★`, label: "Average guest rating" },
+    { value: `${live?.count ?? site.reviewCount}+`, label: "Happy guest reviews" },
+    { value: "10 min", label: "To Dollywood & the Parkway" },
+  ];
 
-export function Welcome() {
   return (
     <section id="welcome" className="grain overflow-hidden py-24 sm:py-32">
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">

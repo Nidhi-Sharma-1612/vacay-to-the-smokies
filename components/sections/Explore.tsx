@@ -29,6 +29,7 @@ export function Explore() {
                     fill
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    style={{ objectPosition: place.focus }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-forest-950/90 via-forest-950/20 to-transparent" />
                   <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-cream-50/95 px-3 py-1 text-xs font-bold text-forest-900">

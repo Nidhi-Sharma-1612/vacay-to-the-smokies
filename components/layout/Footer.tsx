@@ -150,7 +150,7 @@ export function Footer() {
             />
           </a>
           <Link
-            href="/policies#privacy"
+            href="/policies"
             className="transition-colors hover:text-cream-50"
           >
             Policies & privacy

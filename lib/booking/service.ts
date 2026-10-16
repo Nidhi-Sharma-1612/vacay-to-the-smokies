@@ -3,21 +3,13 @@ import { addDays } from "date-fns";
 import { cabins, getCabin, type CabinWithDetails } from "@/data/cabins";
 import { toISO, todayISO } from "./dates";
 import { checkGuests, checkStay } from "./rules";
-import { mockProvider } from "./providers/mock";
-import { ownerRezConfigured, ownerRezProvider } from "./providers/ownerrez";
-import { ProviderError, type BookingProvider, type PaymentRecord } from "./providers/types";
-import type { AvailabilityCalendar, GuestDetails, Quote, Reservation, Result, Stay, StaySearch } from "./types";
+import * as ownerRez from "./ownerrez-widget";
+import type { AvailabilityCalendar, Quote, Result, Stay, StaySearch } from "./types";
 
 const CALENDAR_DAYS = 365;
 
-export function getProvider(): BookingProvider {
-  return ownerRezConfigured() ? ownerRezProvider : mockProvider;
-}
-
-export const bookingSource = () => getProvider().source;
-
 function message(error: unknown) {
-  if (error instanceof ProviderError) return error.message;
+  if (error instanceof ownerRez.OwnerRezError) return error.message;
   console.error("[booking]", error);
   return "We couldn't reach our booking system. Please try again, or call us.";
 }
@@ -25,7 +17,7 @@ function message(error: unknown) {
 export async function getCalendar(cabin: CabinWithDetails): Promise<AvailabilityCalendar> {
   const from = todayISO();
   const to = toISO(addDays(new Date(), CALENDAR_DAYS));
-  return getProvider().getCalendar(cabin, from, to);
+  return ownerRez.getCalendar(cabin, from, to);
 }
 
 /**
@@ -62,7 +54,7 @@ export async function quoteStay(stay: Stay): Promise<Result<{ cabin: CabinWithDe
   try {
     const stayError = checkStay(await getCalendar(cabin), stay);
     if (stayError) return { ok: false, error: stayError };
-    return { ok: true, data: { cabin, quote: await getProvider().getQuote(cabin, stay) } };
+    return { ok: true, data: { cabin, quote: await ownerRez.getQuote(cabin, stay) } };
   } catch (error) {
     return { ok: false, error: message(error) };
   }
@@ -91,14 +83,4 @@ export async function searchCabins(search: StaySearch) {
     available: results.filter((r) => r.status !== "unavailable"),
     unavailable: results.filter((r) => r.status === "unavailable"),
   };
-}
-
-export async function createReservation(stay: Stay, guest: GuestDetails, payment: PaymentRecord): Promise<Result<Reservation>> {
-  const cabin = getCabin(stay.slug);
-  if (!cabin) return { ok: false, error: "We couldn't find that cabin." };
-  try {
-    return { ok: true, data: await getProvider().createReservation(cabin, stay, guest, payment) };
-  } catch (error) {
-    return { ok: false, error: message(error) };
-  }
 }

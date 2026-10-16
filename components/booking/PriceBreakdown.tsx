@@ -16,11 +16,6 @@ export function PriceBreakdown({ quote, compact = false }: { quote: Quote; compa
           <dd className="tabular-nums">{usd(quote.total, quote.currency)}</dd>
         </div>
       </dl>
-      {quote.source === "demo" && (
-        <p className="mt-3 rounded-xl bg-linen-100 px-3 py-2 text-xs leading-relaxed text-ink-600">
-          Demo pricing. Live rates, fees and taxes load from OwnerRez once the API is connected.
-        </p>
-      )}
     </div>
   );
 }

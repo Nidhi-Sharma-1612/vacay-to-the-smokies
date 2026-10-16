@@ -20,8 +20,6 @@ export type Cabin = {
   description: string;
   /** Owner-approved copy for the cabin page (headline, subtitle line, story and highlight list). */
   page: { headline: string; subtitle: string; story: string[]; highlights: string[] };
-  /** Used by the demo pricing engine; OwnerRez supplies real fees when connected. */
-  cleaningFee: number;
   /** Path of this cabin's page on the old OwnerRez-hosted site; redirected to the new page. */
   legacyPath: string;
   /** Travel times quoted in each cabin's own OwnerRez listing. */
@@ -64,7 +62,6 @@ const cabinList: Omit<Cabin, "href">[] = [
         "Airbnb Guest Favorite · Top 10% of Eligible Homes",
       ],
     },
-    cleaningFee: 95,
     nearby: [
       { place: "Gatlinburg", time: "10–15 min" },
       { place: "Pigeon Forge", time: "10–15 min" },
@@ -104,7 +101,6 @@ const cabinList: Omit<Cabin, "href">[] = [
         "Full Kitchen",
       ],
     },
-    cleaningFee: 95,
     nearby: [
       { place: "Gatlinburg", time: "10–15 min" },
       { place: "Pigeon Forge", time: "10–15 min" },
@@ -145,7 +141,6 @@ const cabinList: Omit<Cabin, "href">[] = [
         "Full Kitchen",
       ],
     },
-    cleaningFee: 90,
     nearby: [
       { place: "Gatlinburg", time: "10–15 min" },
       { place: "Pigeon Forge", time: "10–15 min" },
@@ -185,7 +180,6 @@ const cabinList: Omit<Cabin, "href">[] = [
         "Forest Setting",
       ],
     },
-    cleaningFee: 90,
     nearby: [
       { place: "Gatlinburg", time: "5 mi" },
       { place: "Pigeon Forge", time: "5 mi" },
@@ -224,7 +218,6 @@ const cabinList: Omit<Cabin, "href">[] = [
         "Electric Wood Stove",
       ],
     },
-    cleaningFee: 135,
     nearby: [
       { place: "Pigeon Forge Parkway", time: "Walkable" },
       { place: "Dollywood", time: "5 mi" },
@@ -263,7 +256,6 @@ const cabinList: Omit<Cabin, "href">[] = [
         "Easy Access to Attractions & Restaurants",
       ],
     },
-    cleaningFee: 115,
     nearby: [
       { place: "Pigeon Forge Parkway", time: "Walkable" },
       { place: "Dollywood", time: "5 mi" },

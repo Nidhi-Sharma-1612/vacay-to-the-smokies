@@ -37,20 +37,7 @@ export type Quote = {
   currency: string;
   lines: QuoteLine[];
   total: number;
-  /** "live" comes from OwnerRez; "demo" from the built-in mock provider. */
-  source: "live" | "demo";
 };
-
-export type GuestDetails = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  arrivalTime?: string;
-  notes?: string;
-};
-
-export type Reservation = { reference: string; source: "live" | "demo" };
 
 export type DescriptionBlock = { type: "h" | "p" | "li"; text: string };
 

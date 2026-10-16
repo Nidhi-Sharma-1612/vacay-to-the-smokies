@@ -127,13 +127,18 @@ function BookingForm() {
         {stay && (
           <p className="mb-5 rounded-2xl bg-linen-100 px-4 py-3 text-sm text-forest-800">
             <span className="font-semibold">{formatStayRange(stay.checkin, stay.checkout)}</span> · {guestLabel(stay)}
+            {quote.status === "ready" && (
+              <>
+                {" "}
+                · <span className="font-semibold">{usd(quote.quote.total)} total</span>
+              </>
+            )}
           </p>
         )}
         <OwnerRezBookingWidget propertyKey={cabin.ownerRezKey} checkin={stay?.checkin} checkout={stay?.checkout} guests={guests} />
         <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-ink-600">
           <Lock className="mt-0.5 size-4 shrink-0 text-pine-600" aria-hidden />
-          Book Now takes you to our secure checkout, where the final price, fees and taxes are confirmed before you pay. Prefer to ask first?
-          Use Send Inquiry.
+          Add your details, then Book Now takes you to our secure OwnerRez checkout to pay. Prefer to ask first? Use Send Inquiry.
         </p>
       </Modal>
 
@@ -149,7 +154,7 @@ function BookingForm() {
           <PriceBreakdown quote={quote.quote} />
         </div>
       )}
-      {!stay && <p className="mt-4 text-sm text-ink-600">Pick check-in and checkout to see your total, including cleaning fee and taxes.</p>}
+      {!stay && <p className="mt-4 text-sm text-ink-600">Pick check-in and checkout to see your exact total, including cleaning fee and taxes.</p>}
 
       <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-ink-600">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-pine-600" aria-hidden />
@@ -223,6 +228,7 @@ export function BookingPanel() {
               <p className="font-serif text-lg whitespace-nowrap text-forest-900 sm:text-xl">
                 {usd(quote.quote.total)} <span className="font-sans text-sm text-ink-600">total</span>
               </p>
+
             ) : unavailable ? (
               <p className="font-serif text-lg whitespace-nowrap text-rose-500 sm:text-xl">
                 <span className="hidden min-[360px]:inline">Dates unavailable</span>

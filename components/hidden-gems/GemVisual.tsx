@@ -11,7 +11,7 @@ export function GemVisual({ gem, sizes, priority = false }: { gem: HiddenGem; si
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: `linear-gradient(140deg, ${gem.swatch[0]}, ${gem.swatch[1]})` }}>
       {src ? (
-        <Image src={src} alt={`${gem.name}${gem.rendering && !gem.image ? " architectural rendering" : ""}`} fill sizes={sizes} priority={priority} className="object-cover" />
+        <Image src={src} alt={`${gem.name}${gem.rendering && !gem.image ? " architectural rendering" : ""}`} fill sizes={sizes} priority={priority} className={`object-cover ${gem.image ? "" : "object-left-bottom"}`} />
       ) : (
         <div className="absolute inset-0 grid place-items-center text-cream-50/90" aria-hidden>
           <svg viewBox="0 0 200 80" className="absolute bottom-0 w-full text-cream-50/15" preserveAspectRatio="none">
@@ -24,7 +24,7 @@ export function GemVisual({ gem, sizes, priority = false }: { gem: HiddenGem; si
         </div>
       )}
       {gem.status === "coming-soon" && (
-        <span className="absolute top-4 left-4 rounded-full bg-cream-50/95 px-3 py-1 text-[0.7rem] font-bold tracking-wide text-forest-900">
+        <span className="absolute top-3 left-3 max-w-[calc(100%-1.5rem)] rounded-lg bg-cream-50/95 px-2.5 py-1 text-[0.65rem] leading-tight font-bold text-forest-900">
           {gem.rendering ? RENDERING_LABEL : "COMING SOON"}
         </span>
       )}

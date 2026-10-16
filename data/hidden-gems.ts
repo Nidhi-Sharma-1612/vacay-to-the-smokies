@@ -55,6 +55,7 @@ export const hiddenGems: HiddenGem[] = [
     long: "Your own private spa in the Smokies, with a sauna, cold plunge, vitamin C shower, hot tub and fireside double Jacuzzi, surrounded by jade and natural earth tones.",
     status: "coming-soon",
     href: "/hidden-gems/jade-forest",
+    rendering: "/images/hidden-gems/jade-forest-rendering.jpg",
     swatch: ["#5f8f7b", "#1f3a30"],
   },
   {
@@ -66,6 +67,7 @@ export const hiddenGems: HiddenGem[] = [
     long: "A cooler, lighter personality with soft whites and greys contrasted against authentic log walls.",
     status: "coming-soon",
     href: "/hidden-gems/diamond-forest",
+    rendering: "/images/hidden-gems/diamond-forest-rendering.jpg",
     swatch: ["#c9ccce", "#5b5f62"],
   },
 ];

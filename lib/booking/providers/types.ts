@@ -1,7 +1,8 @@
 import type { CabinWithDetails } from "@/data/cabins";
 import type { AvailabilityCalendar, GuestDetails, Quote, Reservation, Stay } from "../types";
 
-export type PaymentRecord = { processor: "stripe" | "none"; reference?: string; amount: number };
+/** How the stay was paid for. `processor` is "none" until a payment method is connected. */
+export type PaymentRecord = { processor: string; reference?: string; amount: number };
 
 /** Anything that can supply availability, pricing and reservations for a cabin. */
 export interface BookingProvider {

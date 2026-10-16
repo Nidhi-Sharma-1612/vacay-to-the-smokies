@@ -1,17 +1,14 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { ArrowLeft, Check, Loader2, Lock, Star } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Star } from "lucide-react";
 import { PriceBreakdown } from "@/components/booking/PriceBreakdown";
 import { formatLongDate, usd } from "@/lib/booking/dates";
 import { guestLabel, searchQuery } from "@/lib/booking/search-params";
 import type { GuestDetails, Quote, Stay } from "@/lib/booking/types";
-import { PaymentStep } from "./PaymentStep";
 
 export type CheckoutCabin = {
   slug: string;
@@ -24,9 +21,7 @@ export type CheckoutCabin = {
   houseRules: string[];
 };
 
-type Props = { stay: Stay; cabin: CheckoutCabin; initialQuote: Quote; stripePublishableKey: string | null };
-
-type Payment = { mode: "demo" } | { mode: "stripe"; clientSecret: string; paymentIntentId: string };
+type Props = { stay: Stay; cabin: CheckoutCabin; initialQuote: Quote };
 
 type FieldErrors = Partial<Record<keyof GuestDetails | "agree", string>>;
 
@@ -35,19 +30,20 @@ const STEPS = ["Your details", "Payment", "Confirmed"];
 const input =
   "mt-1.5 w-full rounded-xl border border-linen-200 bg-white px-4 py-3 text-forest-900 outline-none transition-colors placeholder:text-ink-600/50 focus:border-forest-800 aria-[invalid=true]:border-rose-500";
 
-function Field({ label, error, children, optional }: { label: string; error?: string; children: React.ReactNode; optional?: boolean }) {
+function Field({ label, error, hint, children, optional }: { label: string; error?: string; hint?: string; children: React.ReactNode; optional?: boolean }) {
   return (
     <label className="block">
       <span className="text-sm font-semibold text-forest-900">
         {label} {optional && <span className="font-normal text-ink-600">(optional)</span>}
       </span>
       {children}
+      {hint && !error && <span className="mt-1 block text-sm text-ink-600">{hint}</span>}
       {error && <span className="mt-1 block text-sm text-rose-500">{error}</span>}
     </label>
   );
 }
 
-export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }: Props) {
+export function CheckoutFlow({ stay, cabin, initialQuote }: Props) {
   const router = useRouter();
   const [step, setStep] = useState<0 | 1>(0);
   const [quote, setQuote] = useState(initialQuote);
@@ -56,8 +52,6 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [payment, setPayment] = useState<Payment | null>(null);
-  const stripePromise = useMemo(() => (stripePublishableKey ? loadStripe(stripePublishableKey) : null), [stripePublishableKey]);
 
   const update = (key: keyof GuestDetails) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setGuest((g) => ({ ...g, [key]: e.target.value }));
@@ -68,7 +62,7 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
     if (!agree) return setErrors({ agree: "Please agree to the house rules and cancellation policy." });
     setBusy(true);
     try {
-      const res = await fetch("/api/checkout/intent", {
+      const res = await fetch("/api/checkout/prepare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ stay, guest }),
@@ -81,7 +75,6 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
       }
       setErrors({});
       setQuote(body.quote);
-      setPayment(body.mode === "stripe" ? { mode: "stripe", clientSecret: body.clientSecret, paymentIntentId: body.paymentIntentId } : { mode: "demo" });
       setStep(1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
@@ -91,12 +84,12 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
     }
   }
 
-  /** Called once payment succeeds (or immediately in demo mode). */
-  async function finalize(paymentIntentId?: string) {
+  /** Creates the reservation. Once a payment method is chosen, this runs after payment succeeds. */
+  async function finalize() {
     const res = await fetch("/api/checkout/confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stay, guest, paymentIntentId }),
+      body: JSON.stringify({ stay, guest }),
     });
     const body = await res.json();
     if (!res.ok) throw new Error(body.error ?? "We couldn't complete your reservation.");
@@ -147,7 +140,7 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
                 <Field label="Email" error={errors.email}>
                   <input type="email" className={input} value={guest.email} onChange={update("email")} autoComplete="email" aria-invalid={!!errors.email} />
                 </Field>
-                <Field label="Mobile phone" error={errors.phone}>
+                <Field label="Mobile phone" error={errors.phone} hint="We'll text check-in information to this number, so it must be able to receive messages.">
                   <input type="tel" className={input} value={guest.phone} onChange={update("phone")} autoComplete="tel" aria-invalid={!!errors.phone} />
                 </Field>
                 <Field label="Estimated arrival" optional>
@@ -182,7 +175,12 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
                   className="mt-0.5 size-4 accent-forest-900"
                 />
                 <span>
-                  I agree to the house rules and the cancellation policy below, and confirm the primary guest is 18 or older.
+                  I agree to the{" "}
+                  <Link href="/policies" target="_blank" className="font-semibold underline underline-offset-2">
+                    direct booking policies
+                  </Link>
+                  , house rules and cancellation policy, confirm the primary guest is 18 or older, and understand that online check-in (photo ID,
+                  selfie and a card on file for incidentals) is required before arrival.
                 </span>
               </label>
               {errors.agree && <p className="mt-2 text-sm text-rose-500">{errors.agree}</p>}
@@ -202,9 +200,6 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h2 className="font-serif text-2xl text-forest-900">Payment</h2>
-                  <p className="mt-1 flex items-center gap-1.5 text-sm text-ink-600">
-                    <Lock className="size-4 text-pine-600" aria-hidden /> Encrypted and processed securely on this page.
-                  </p>
                 </div>
                 <button type="button" onClick={() => setStep(0)} className="text-sm font-semibold text-forest-800 underline underline-offset-4">
                   Edit details
@@ -214,28 +209,8 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
                 {guest.firstName} {guest.lastName} · {guest.email} · {guest.phone}
               </p>
 
-              {payment?.mode === "stripe" && stripePromise ? (
-                <Elements
-                  stripe={stripePromise}
-                  options={{
-                    clientSecret: payment.clientSecret,
-                    appearance: {
-                      theme: "stripe",
-                      variables: {
-                        colorPrimary: "#24372d",
-                        colorText: "#1e1e1c",
-                        colorDanger: "#e0566c",
-                        borderRadius: "12px",
-                        fontFamily: "Manrope, system-ui, sans-serif",
-                      },
-                    },
-                  }}
-                >
-                  <PaymentStep total={quote.total} onPaid={(id) => finalize(id)} />
-                </Elements>
-              ) : (
-                <DemoPayment total={quote.total} onConfirm={() => finalize()} />
-              )}
+              {/* TODO: add the payment form here once the payment method is chosen. */}
+              <DemoPayment total={quote.total} onConfirm={finalize} />
             </div>
           )}
         </div>
@@ -275,8 +250,11 @@ export function CheckoutFlow({ stay, cabin, initialQuote, stripePublishableKey }
           </div>
           {cabin.cancellationPolicy && (
             <div className="mt-5 rounded-3xl bg-white p-5 text-sm ring-1 ring-forest-900/5">
-              <p className="font-semibold text-forest-900">Cancellation policy</p>
+              <p className="font-semibold text-forest-900">Cancellation policy · direct bookings</p>
               <p className="mt-2 leading-relaxed text-ink-600">{cabin.cancellationPolicy}</p>
+              <Link href="/policies#cancellation" target="_blank" className="mt-3 inline-block font-semibold text-forest-900 underline underline-offset-2">
+                Read all booking policies
+              </Link>
             </div>
           )}
         </aside>
@@ -291,10 +269,8 @@ function DemoPayment({ total, onConfirm }: { total: number; onConfirm: () => Pro
   return (
     <div className="mt-6">
       <div className="rounded-2xl border border-dashed border-ember-300 bg-ember-500/5 p-5 text-sm text-forest-800">
-        <p className="font-semibold">Demo mode: no card will be charged</p>
-        <p className="mt-1 text-ink-600">
-          Add your Stripe keys to <code className="rounded bg-linen-100 px-1">.env.local</code> to collect payment here with Stripe&apos;s secure card form.
-        </p>
+        <p className="font-semibold">Online payment coming soon</p>
+        <p className="mt-1 text-ink-600">No card will be charged. This confirms a demo reservation while the payment method is being set up.</p>
       </div>
       {error && <p className="mt-4 rounded-xl bg-rose-500/10 px-4 py-3 text-sm text-rose-500">{error}</p>}
       <button

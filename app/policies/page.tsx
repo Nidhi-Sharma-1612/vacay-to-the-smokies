@@ -1,65 +1,241 @@
 import type { Metadata } from "next";
+import { BadgeCheck, CalendarX2, Clock, CreditCard, Info, MessageSquareText, ScrollText, ShieldCheck, UserCheck } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { cabins } from "@/data/cabins";
 import { site } from "@/data/site";
-import { formatTime } from "@/lib/booking/dates";
 
-export const metadata: Metadata = { title: "Booking policies | Vacay To The Smokies" };
+export const metadata: Metadata = {
+  title: "Direct Booking Policies & Good to Know | Vacay To The Smokies",
+  description:
+    "Direct booking policies for Vacay To The Smokies: required online check-in, cancellation, check-in times, house rules, payments and privacy.",
+};
+
+// Section copy is the owner's approved wording; keep it verbatim when editing layout.
+const SECTIONS = [
+  { id: "direct-vs-third-party", label: "Direct vs. third-party bookings" },
+  { id: "online-check-in", label: "Required online check-in" },
+  { id: "guest-services", label: "Guest services" },
+  { id: "cancellation", label: "Cancellation policy" },
+  { id: "check-in-checkout", label: "Check-in & checkout" },
+  { id: "house-rules", label: "House rules" },
+  { id: "payments", label: "Payments" },
+  { id: "privacy", label: "Privacy" },
+];
+
+const PLATFORMS = "Airbnb, Vrbo, Booking.com, Expedia, or another third-party booking platform";
+
+function Section({ id, icon: Icon, title, badge, children }: { id: string; icon: typeof Info; title: string; badge?: string; children: React.ReactNode }) {
+  return (
+    <section id={id} className="scroll-mt-28 border-t border-linen-200 py-10 first:border-t-0 first:pt-0">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-linen-100 text-ember-600">
+          <Icon className="size-5" aria-hidden />
+        </span>
+        <h2 className="font-serif text-2xl text-forest-900 sm:text-[1.7rem]">{title}</h2>
+        {badge && <span className="rounded-full bg-forest-900 px-3 py-1 text-xs font-bold text-cream-50">{badge}</span>}
+      </div>
+      <div className="mt-5 space-y-4 leading-relaxed text-ink-600">{children}</div>
+    </section>
+  );
+}
+
+function Bullets({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-2.5">
+      {items.map((item) => (
+        <li key={item} className="flex gap-3">
+          <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-ember-500" aria-hidden />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const PhoneLink = () => (
+  <a href={site.phoneHref} className="font-semibold whitespace-nowrap text-forest-900 underline underline-offset-2">
+    865-375-8621
+  </a>
+);
 
 export default function PoliciesPage() {
-  const sample = cabins[0].details;
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-3xl px-4 pt-32 pb-24 sm:px-6">
-        <p className="eyebrow text-ember-500">Good to know</p>
-        <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-forest-900 sm:text-5xl">Booking policies</h1>
+      <main className="min-h-screen pt-20">
+        <section className="grain border-b border-linen-200 bg-linen-100">
+          <div className="mx-auto max-w-6xl px-4 pt-14 pb-12 sm:px-6 lg:px-8">
+            <p className="eyebrow text-ember-500">Good to know</p>
+            <h1 className="mt-3 max-w-3xl font-serif text-4xl font-medium tracking-tight text-balance text-forest-900 sm:text-5xl">
+              Direct Booking Policies &amp; Good to Know
+            </h1>
+          </div>
+        </section>
 
-        <div className="mt-12 space-y-12 leading-relaxed text-ink-600">
-          <section>
-            <h2 className="font-serif text-2xl text-forest-900">Cancellation</h2>
-            <p className="mt-3">{sample.cancellationPolicy}</p>
-          </section>
+        <div className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-16 lg:px-8">
+          <nav aria-label="On this page" className="hidden lg:sticky lg:top-28 lg:block lg:self-start">
+            <p className="eyebrow text-ember-500">On this page</p>
+            <ol className="mt-4 space-y-2.5 text-sm">
+              {SECTIONS.map((s) => (
+                <li key={s.id}>
+                  <a href={`#${s.id}`} className="text-ink-600 transition-colors hover:text-forest-900">
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
 
-          <section>
-            <h2 className="font-serif text-2xl text-forest-900">Check-in & checkout</h2>
-            <p className="mt-3">
-              Check-in is after {formatTime(sample.checkIn)} and checkout is by {formatTime(sample.checkOut)}. Most cabins have self check-in;
-              instructions and the exact address are sent before arrival.
-            </p>
-          </section>
+          <article className="max-w-3xl min-w-0">
+            <section id="direct-vs-third-party" className="scroll-mt-28 rounded-3xl border border-ember-300/60 bg-ember-500/5 p-6 sm:p-8">
+              <p className="flex items-center gap-2 text-sm font-bold tracking-wide text-ember-600 uppercase">
+                <Info className="size-4" aria-hidden /> Important
+              </p>
+              <h2 className="mt-2 font-serif text-2xl text-forest-900 sm:text-[1.7rem]">Direct Bookings vs. Third-Party Reservations</h2>
+              <div className="mt-4 space-y-4 leading-relaxed text-forest-800">
+                <p>
+                  The direct-booking policies below apply only to reservations booked directly with Vacay To The Smokies, including reservations
+                  made through this website.
+                </p>
+                <p>
+                  If you booked through {PLATFORMS}, the policies, terms, cancellation rules, payment requirements, and refund conditions associated
+                  with your reservation on that platform apply. Please refer to your original booking confirmation and the terms displayed by the
+                  platform where you booked.
+                </p>
+                <p>
+                  If there is a difference between the policies below and the policies associated with a reservation made through a third-party
+                  booking platform, the terms applicable to your reservation through that platform will govern.
+                </p>
+              </div>
+            </section>
 
-          <section>
-            <h2 className="font-serif text-2xl text-forest-900">House rules</h2>
-            <ul className="mt-3 list-disc space-y-1.5 pl-5">
-              <li>No smoking, parties or events.</li>
-              <li>The primary renter must be at least 18 years old.</li>
-              <li>Pets are welcome with prior approval and a pet fee. Please crate pets if left unattended.</li>
-              <li>Maximum occupancy is listed on each cabin and can&apos;t be exceeded.</li>
-            </ul>
-          </section>
+            <div className="mt-10">
+              <Section id="online-check-in" icon={UserCheck} title="Required Online Check-In" badge="All reservations">
+                <p className="font-semibold text-forest-900">This requirement applies to all guests, regardless of where the reservation was booked.</p>
+                <p>
+                  Before arrival, the primary guest is required to complete and sign our online check-in form. As part of the check-in and
+                  reservation verification process, guests will be required to provide:
+                </p>
+                <Bullets
+                  items={[
+                    "A valid government-issued photo ID",
+                    "A current selfie for identity verification",
+                    "A valid payment method to be kept on file for incidentals",
+                  ]}
+                />
+                <p className="rounded-2xl bg-linen-100 px-5 py-4 text-forest-800">
+                  Completion of the required online check-in process is a condition of check-in and must be completed before property access
+                  information is provided.
+                </p>
+                <p>
+                  This requirement applies to reservations made directly with Vacay To The Smokies as well as reservations made through Airbnb,
+                  Vrbo, Booking.com, Expedia, and other third-party booking platforms.
+                </p>
+              </Section>
 
-          <section>
-            <h2 className="font-serif text-2xl text-forest-900">Payments</h2>
-            <p className="mt-3">
-              Payment is taken securely on this website by Stripe at the time of booking. We never see or store your full card number.
-              Prices shown at checkout include rent, cleaning fee, any pet fee and lodging taxes.
-            </p>
-          </section>
+              <Section id="guest-services" icon={MessageSquareText} title="Guest Services & Check-In Communications">
+                <p>
+                  Our official Guest Services number is <PhoneLink />.
+                </p>
+                <p>
+                  Guests may receive text messages or other communications from this number regarding their reservation, required online check-in,
+                  arrival information, property access instructions, and other important information related to their stay.
+                </p>
+                <p>
+                  Please make sure the phone number provided with your reservation is accurate and able to receive messages so that you do not miss
+                  important check-in information.
+                </p>
+              </Section>
 
-          {/* TODO: Replace with the owner's full privacy policy before launch. */}
-          <section id="privacy" className="scroll-mt-28">
-            <h2 className="font-serif text-2xl text-forest-900">Privacy</h2>
-            <p className="mt-3">
-              The details you enter at checkout (name, email, phone and notes) are used only to manage your reservation and
-              communicate about your stay. Card details are handled by Stripe. For questions about your data, contact us at{" "}
-              <a href={`mailto:${site.email}`} className="font-semibold text-forest-900 underline underline-offset-2">
-                {site.email}
-              </a>
-              .
-            </p>
-          </section>
+              <Section id="cancellation" icon={CalendarX2} title="Cancellation Policy" badge="Direct bookings">
+                <p>For reservations booked directly with Vacay To The Smokies:</p>
+                <dl className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl bg-white p-5 ring-1 ring-forest-900/5">
+                    <dt className="text-sm font-semibold text-ink-600">More than 30 days before arrival</dt>
+                    <dd className="mt-1 text-forest-900">Fifty percent (50%) of the total booking charges will be refunded.</dd>
+                  </div>
+                  <div className="rounded-2xl bg-white p-5 ring-1 ring-forest-900/5">
+                    <dt className="text-sm font-semibold text-ink-600">30 days or less before arrival</dt>
+                    <dd className="mt-1 text-forest-900">No refund will be issued.</dd>
+                  </div>
+                </dl>
+                <p>
+                  Cancellation policies for reservations made through Airbnb, Vrbo, Booking.com, Expedia, or another third-party platform may be
+                  different. Guests who booked through one of these platforms should refer to the cancellation policy associated with their
+                  reservation before requesting a cancellation.
+                </p>
+              </Section>
+
+              <Section id="check-in-checkout" icon={Clock} title="Check-In & Checkout">
+                <p>
+                  Check-in is after <strong className="text-forest-900">4:00 PM</strong>, and checkout is by{" "}
+                  <strong className="text-forest-900">11:00 AM</strong>.
+                </p>
+                <p>
+                  Most cabins offer self check-in. Property access information, check-in instructions, and the exact property address are provided
+                  before arrival after completion of any required check-in and verification steps.
+                </p>
+                <p>Guests who booked through a third-party platform should also review communications provided through that platform.</p>
+              </Section>
+
+              <Section id="house-rules" icon={ScrollText} title="House Rules">
+                <p>Unless different or additional rules are specifically stated for your property or reservation:</p>
+                <Bullets
+                  items={[
+                    "No smoking, parties, or events.",
+                    "The primary renter must be at least 18 years old.",
+                    "Pets are welcome at designated pet-friendly properties with prior approval and payment of the applicable pet fee. Pets should be crated when left unattended.",
+                    "Maximum occupancy is stated for each property and may not be exceeded.",
+                    "Additional property-specific rules may apply and will be provided with your reservation.",
+                  ]}
+                />
+              </Section>
+
+              <Section id="payments" icon={CreditCard} title="Payments" badge="Direct bookings">
+                <p>
+                  For reservations booked directly with Vacay To The Smokies, Vacay To The Smokies is the merchant of record and charges associated
+                  with your reservation will be processed by Vacay To The Smokies.
+                </p>
+                <p>
+                  Credit and debit card payments are securely processed through Authorize.net. Vacay To The Smokies does not store your full payment
+                  card number.
+                </p>
+                <p>
+                  Prices displayed during direct booking checkout include the applicable rent, cleaning fee, approved pet fee, if any, and lodging
+                  taxes.
+                </p>
+                <p>
+                  Reservations made through {PLATFORMS} may have different payment schedules, fees, payment-processing arrangements, and terms.
+                  Please refer to the payment information associated with the platform through which you booked.
+                </p>
+              </Section>
+
+              <Section id="privacy" icon={ShieldCheck} title="Privacy">
+                <p>
+                  For direct reservations, the information you provide during booking and online check-in—including your name, email address, phone
+                  number, reservation information, identification and other required verification information—is used to manage and verify your
+                  reservation, facilitate check-in, provide your stay, and communicate with you regarding your booking.
+                </p>
+                <p>Payment card information is securely processed through Authorize.net.</p>
+                <p>Guests who book through a third-party platform are also subject to that platform&apos;s privacy policy and data-handling practices.</p>
+              </Section>
+            </div>
+
+            <div className="mt-4 flex gap-4 rounded-3xl bg-forest-900 p-6 text-cream-50 sm:p-8">
+              <BadgeCheck className="mt-0.5 size-6 shrink-0 text-ember-300" aria-hidden />
+              <p className="leading-relaxed text-mist-200/90">
+                For questions regarding your reservation or information, please contact Vacay To The Smokies Guest Services at{" "}
+                <a href={site.phoneHref} className="font-semibold whitespace-nowrap text-cream-50 underline underline-offset-2">
+                  865-375-8621
+                </a>{" "}
+                or{" "}
+                <a href={`mailto:${site.email}`} className="font-semibold [overflow-wrap:anywhere] text-cream-50 underline underline-offset-2">
+                  {site.email}
+                </a>
+                .
+              </p>
+            </div>
+          </article>
         </div>
       </main>
       <Footer />

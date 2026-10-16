@@ -20,11 +20,15 @@ const sample = cabins[0].details;
 const FAQS = [
   {
     q: "What are check-in and checkout times?",
-    a: `Check-in is after ${formatTime(sample.checkIn)} and checkout is by ${formatTime(sample.checkOut)}. Most cabins have self check-in, and we send directions and instructions before you arrive.`,
+    a: `Check-in is after ${formatTime(sample.checkIn)} and checkout is by ${formatTime(sample.checkOut)}. Most cabins have self check-in. Access instructions and the exact address are sent before arrival, once online check-in is complete.`,
+  },
+  {
+    q: "Do I need to complete online check-in?",
+    a: "Yes, every guest does, including Airbnb, Vrbo, Booking.com and Expedia bookings. Before arrival the primary guest signs our online check-in form and provides a valid photo ID, a current selfie and a payment method on file for incidentals. Messages about it come by text from our Guest Services number, 865-375-8621.",
   },
   {
     q: "Can I bring my dog?",
-    a: "Yes. Every cabin is pet-friendly with prior approval and a pet fee. Please crate pets if they're left alone in the cabin.",
+    a: "Pets are welcome at our designated pet-friendly cabins with prior approval and a pet fee. Please crate pets when they're left unattended.",
   },
   {
     q: "Are the cabins good for kids?",
@@ -36,7 +40,7 @@ const FAQS = [
   },
   {
     q: "What is your cancellation policy?",
-    a: sample.cancellationPolicy ?? "Please contact us for cancellation terms.",
+    a: "For reservations booked directly with us: cancel more than 30 days before arrival and 50% of the total booking charges are refunded; within 30 days of arrival, no refund is issued. If you booked through Airbnb, Vrbo, Booking.com or Expedia, that platform's cancellation policy applies.",
   },
 ];
 

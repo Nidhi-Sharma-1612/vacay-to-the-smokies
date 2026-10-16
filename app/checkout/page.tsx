@@ -33,7 +33,6 @@ export default async function CheckoutPage({ searchParams }: PageProps<"/checkou
               cancellationPolicy: result.data.cabin.details.cancellationPolicy,
               houseRules: result.data.cabin.details.houseRules,
             }}
-            stripePublishableKey={process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? null}
           />
         ) : (
           <div className="mx-auto flex max-w-lg flex-col items-center px-4 py-28 text-center">

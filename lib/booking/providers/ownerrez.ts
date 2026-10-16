@@ -144,7 +144,7 @@ export const ownerRezProvider: BookingProvider = {
     });
     const notes = [
       "Direct booking from vacaytothesmokies.com.",
-      payment.processor === "stripe" ? `Paid $${payment.amount.toFixed(2)} via Stripe (PaymentIntent ${payment.reference}).` : null,
+      payment.processor !== "none" ? `Paid $${payment.amount.toFixed(2)} via ${payment.processor}${payment.reference ? ` (ref ${payment.reference})` : ""}.` : null,
       guest.arrivalTime ? `Estimated arrival: ${guest.arrivalTime}.` : null,
       guest.notes ? `Guest note: ${guest.notes}` : null,
     ]

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarX2, ChevronRight, Clock, KeyRound, ScrollText, ShieldAlert } from "lucide-react";
+import Link from "next/link";
+import { CalendarX2, ChevronRight, Clock, KeyRound, ScrollText, ShieldAlert, UserCheck } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 
 type Props = {
@@ -61,7 +62,8 @@ export function ThingsToKnow({ checkIn, checkOut, checkInMethod, houseRules, pro
           <ul className="space-y-2">
             {checkIn && <li>Check-in after {checkIn}</li>}
             {checkOut && <li>Checkout by {checkOut}</li>}
-            {houseRules.slice(0, 2).map((r) => (
+            <li>Online check-in required before arrival</li>
+            {houseRules.slice(0, 1).map((r) => (
               <li key={r}>{clean(r)}</li>
             ))}
           </ul>
@@ -75,7 +77,7 @@ export function ThingsToKnow({ checkIn, checkOut, checkInMethod, houseRules, pro
             ))}
           </ul>
         </Card>
-        <Card icon={CalendarX2} title="Cancellation policy" onMore={cancellationPolicy ? () => setPanel("cancellation") : undefined}>
+        <Card icon={CalendarX2} title="Cancellation · direct bookings" onMore={cancellationPolicy ? () => setPanel("cancellation") : undefined}>
           <p className="line-clamp-4">{cancellationPolicy ?? "Contact us for cancellation terms."}</p>
         </Card>
       </div>
@@ -109,6 +111,14 @@ export function ThingsToKnow({ checkIn, checkOut, checkInMethod, houseRules, pro
               </div>
             </div>
           )}
+          <div className="flex items-start gap-3 rounded-2xl bg-white p-4 ring-1 ring-forest-900/5 sm:col-span-2">
+            <UserCheck className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />
+            <div>
+              <p className="text-sm text-ink-600">Required online check-in · all reservations</p>
+              <p className="font-semibold text-forest-900">Photo ID, a current selfie and a card on file for incidentals</p>
+              <p className="mt-1 text-sm text-ink-600">Access details are sent once it&apos;s complete, including for Airbnb and Vrbo bookings.</p>
+            </div>
+          </div>
         </div>
         <ul className="mt-6 divide-y divide-linen-200">
           {houseRules.map((r) => (
@@ -131,6 +141,13 @@ export function ThingsToKnow({ checkIn, checkOut, checkInMethod, houseRules, pro
 
       <Modal open={panel === "cancellation"} onClose={close} title="Cancellation policy">
         <p className="leading-relaxed text-forest-800">{cancellationPolicy}</p>
+        <p className="mt-4 text-sm leading-relaxed text-ink-600">
+          This policy applies to reservations booked directly with Vacay To The Smokies. If you booked through Airbnb, Vrbo, Booking.com,
+          Expedia or another platform, that platform&apos;s cancellation policy applies.
+        </p>
+        <Link href="/policies" className="mt-4 inline-block font-semibold text-forest-900 underline underline-offset-4">
+          Read all booking policies
+        </Link>
       </Modal>
     </>
   );

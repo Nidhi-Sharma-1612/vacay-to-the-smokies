@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarCheck2, Clock, KeyRound, Mail, Phone } from "lucide-react";
+import { CalendarCheck2, Clock, KeyRound, Mail, MessageSquareText, Phone, UserCheck } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getCabin } from "@/data/cabins";
@@ -83,8 +83,25 @@ export default async function ConfirmedPage({ searchParams }: PageProps<"/bookin
                 Your confirmation and receipt are on the way to your inbox.
               </li>
               <li className="flex gap-3">
+                <UserCheck className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />
+                <span>
+                  <span className="font-semibold text-forest-900">Complete your required online check-in.</span> Before arrival, the primary guest
+                  signs our check-in form and provides a valid photo ID, a current selfie and a payment method on file for incidentals.
+                </span>
+              </li>
+              <li className="flex gap-3">
                 <KeyRound className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />
-                Before arrival we&apos;ll send the address, directions and self check-in instructions.
+                Once online check-in is complete, we&apos;ll send the exact address, directions and self check-in instructions.
+              </li>
+              <li className="flex gap-3">
+                <MessageSquareText className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />
+                <span>
+                  Check-in messages come by text from our Guest Services number,{" "}
+                  <a href={site.phoneHref} className="font-semibold whitespace-nowrap text-forest-900 underline underline-offset-2">
+                    865-375-8621
+                  </a>
+                  .
+                </span>
               </li>
               <li className="flex gap-3">
                 <Clock className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />

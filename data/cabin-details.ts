@@ -226,7 +226,7 @@ export const cabinDetails: Record<string, CabinDetails> = {
     "sleeping": {
       "summary": "Studio, sleeps 1-2",
       "rooms": [
-        "King sized bed overlooking jacuzzi and fireplace · 1 King Bed"
+        "King-size bed overlooking the Jacuzzi and fireplace · 1 King Bed"
       ],
       "note": "Open floor plan studio cabin with King bed"
     },
@@ -504,7 +504,7 @@ export const cabinDetails: Record<string, CabinDetails> = {
       },
       {
         "type": "p",
-        "text": "A slight rise sets off the jacuzzi tub with head pillows at both ends. A barn door slides across the marble shower and bathroom area. Fixtures and accents are all in gold."
+        "text": "A slight rise sets off the Jacuzzi with head pillows at both ends. A barn door slides across the marble shower and bathroom area. Fixtures and accents are all in gold."
       },
       {
         "type": "p",
@@ -717,7 +717,7 @@ export const cabinDetails: Record<string, CabinDetails> = {
       },
       {
         "type": "p",
-        "text": "A dual jacuzzi tub, with a curtain and shower head available, is conveniently located nearby so that you can soak fireside."
+        "text": "A double Jacuzzi, with a curtain and shower head available, is conveniently located nearby so that you can soak fireside."
       },
       {
         "type": "h",
@@ -831,7 +831,7 @@ export const cabinDetails: Record<string, CabinDetails> = {
     "sleeping": {
       "summary": "Studio, sleeps 1-2",
       "rooms": [
-        "King sized bed overlooking fireplace and jacuzzi · 1 King Bed"
+        "King-size bed overlooking the fireplace and Jacuzzi · 1 King Bed"
       ],
       "note": null
     },
@@ -1008,7 +1008,7 @@ export const cabinDetails: Record<string, CabinDetails> = {
       },
       {
         "type": "li",
-        "text": "King sized Bed"
+        "text": "King-size bed"
       },
       {
         "type": "li",
@@ -1599,7 +1599,7 @@ export const cabinDetails: Record<string, CabinDetails> = {
       },
       {
         "type": "p",
-        "text": "Sliding barn doors from the king bedroom lead to a stylish and sophisticated ensuite full bathroom with a spa-style jacuzzi tub and a walk-in shower. This bathroom is also accessible from a sliding barn door off the kitchen/living room, where the sleeper sofa is located. The luxurious bathroom boasts rustic-chic wrought iron chandeliers, a large, full-length mirror, a single-sink granite vanity, and plenty of cabinet storage space. Toiletries, hairdryer, robes, and plush towels are all provided."
+        "text": "Sliding barn doors from the king bedroom lead to a stylish and sophisticated ensuite full bathroom with a spa-style Jacuzzi and a walk-in shower. This bathroom is also accessible from a sliding barn door off the kitchen/living room, where the sleeper sofa is located. The luxurious bathroom boasts rustic-chic wrought iron chandeliers, a large, full-length mirror, a single-sink granite vanity, and plenty of cabinet storage space. Toiletries, hairdryer, robes, and plush towels are all provided."
       },
       {
         "type": "h",

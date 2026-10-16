@@ -59,7 +59,7 @@ export function Hero() {
             className="mt-6 max-w-2xl"
           >
             <p className="text-lg leading-relaxed text-cream-50/85">
-              Private hot tubs, fireside jacuzzis and forest views. Feel worlds away while staying minutes from town.
+              Private hot tubs, fireside Jacuzzis and forest views. Feel worlds away while staying minutes from Gatlinburg and Pigeon Forge.
             </p>
           </motion.div>
 
@@ -69,7 +69,7 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.7, ease }}
             className="mt-10 w-full text-left"
           >
-            <SearchBar panelMode="modal" />
+            <SearchBar panelMode="modal" submitLabel="Find Your Cabin" />
           </motion.div>
         </div>
 

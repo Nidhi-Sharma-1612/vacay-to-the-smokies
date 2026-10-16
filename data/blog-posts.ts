@@ -11,7 +11,7 @@ export const blogPosts: BlogPost[] = [
     "excerpt": "Nestled between the charming states of Tennessee and North Carolina, the Great Smoky Mountains National Park is a natural wonder that beckons travelers year-round. Yet, there's a time of year when this stunning…",
     "date": "2023-08-09",
     "minutes": 6,
-    "category": "Seasons",
+    "category": "The Smokies by Season",
     "cover": "/images/blog/fall-cover.jpg",
     "hero": "/images/blog/fall-hero.jpg",
     "blocks": [
@@ -336,7 +336,7 @@ export const blogPosts: BlogPost[] = [
     "excerpt": "\"How do I plan a Romantic trip?\" Is a question we are often asked by our guests. We have the answer!",
     "date": "2023-08-03",
     "minutes": 3,
-    "category": "Romance",
+    "category": "Romantic Smoky Mountain Getaways",
     "cover": "/images/blog/romance-cover.jpg",
     "hero": "/images/blog/romance-hero.jpg",
     "blocks": [
@@ -458,7 +458,7 @@ export const blogPosts: BlogPost[] = [
     "excerpt": "Nestled between Tennessee and North Carolina, the Great Smoky Mountains National Park is a nature lover's paradise, boasting breathtaking landscapes, diverse wildlife, and a wealth of outdoor adventures. Whether you're…",
     "date": "2023-07-28",
     "minutes": 3,
-    "category": "Things to do",
+    "category": "Great Smoky Mountains National Park",
     "cover": "/images/explore/national-park.jpg",
     "hero": "/images/explore/national-park.jpg",
     "blocks": [
@@ -634,7 +634,7 @@ export const blogPosts: BlogPost[] = [
     "excerpt": "You may be familiar with the Smoky Mountains, but what about Gatlinburg? This Tennessee town is a popular tourist destination for a reason: its attractions are truly unforgettable. From Ripley's Aquarium of the Smokies…",
     "date": "2023-02-03",
     "minutes": 2,
-    "category": "Gatlinburg",
+    "category": "Things to Do in Gatlinburg",
     "cover": "/images/blog/gatlinburg-cover.jpg",
     "hero": "/images/blog/gatlinburg-cover.jpg",
     "blocks": [

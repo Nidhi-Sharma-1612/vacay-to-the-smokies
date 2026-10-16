@@ -18,7 +18,7 @@ export function generateStaticParams() {
   return blogPosts.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/smoky-mountain-guide/[slug]">): Promise<Metadata> {
   const post = getPost((await params).slug);
   if (!post) return {};
   return {
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
   };
 }
 
-export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">) {
+export default async function BlogPostPage({ params }: PageProps<"/smoky-mountain-guide/[slug]">) {
   const post = getPost((await params).slug);
   if (!post) notFound();
   const headings = post.blocks.filter((b) => b.type === "heading").map((b) => b.text);
@@ -45,11 +45,11 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
           <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-950 via-forest-950/50 to-forest-950/20" />
           <div className="mx-auto max-w-4xl px-4 pt-16 pb-14 sm:px-6 sm:pt-24 sm:pb-20">
             <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-cream-50/70">
-              <Link href="/blog" className="hover:text-cream-50">
-                Blog
+              <Link href="/smoky-mountain-guide" className="hover:text-cream-50">
+                Smoky Mountain Guide
               </Link>
               <ChevronRight className="size-4" aria-hidden />
-              <Link href={`/blog?category=${encodeURIComponent(post.category)}`} className="hover:text-cream-50">
+              <Link href={`/smoky-mountain-guide?category=${encodeURIComponent(post.category)}`} className="hover:text-cream-50">
                 {post.category}
               </Link>
             </nav>
@@ -72,8 +72,8 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
           <article className="mx-auto w-full max-w-3xl min-w-0">
             <ArticleBody blocks={post.blocks} />
             <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-linen-200 pt-6">
-              <Link href="/blog" className="inline-flex items-center gap-2 font-semibold text-forest-800 hover:text-ember-600">
-                <ArrowLeft className="size-4" aria-hidden /> All stories
+              <Link href="/smoky-mountain-guide" className="inline-flex items-center gap-2 font-semibold text-forest-800 hover:text-ember-600">
+                <ArrowLeft className="size-4" aria-hidden /> All guides
               </Link>
               <CabinActions slug={post.slug} name={post.title} save={false} />
             </div>
@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
             )}
             <div className="rounded-3xl bg-forest-900 p-6 text-cream-50">
               <p className="eyebrow text-ember-300">Plan your escape</p>
-              <p className="mt-3 font-serif text-2xl leading-snug">Stay in a hot-tub cabin minutes from it all</p>
+              <p className="mt-3 font-serif text-2xl leading-snug">Stay in a cabin with a private hot tub, minutes from it all</p>
               <Link
                 href="/cabins"
                 className="mt-5 inline-flex rounded-full bg-ember-500 px-5 py-3 text-sm font-semibold transition-colors hover:bg-ember-600"
@@ -124,8 +124,8 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
           <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between gap-4">
               <h2 className="font-serif text-3xl font-medium text-forest-900">Keep reading</h2>
-              <Link href="/blog" className="hidden font-semibold text-forest-800 underline underline-offset-4 hover:text-ember-600 sm:block">
-                All stories
+              <Link href="/smoky-mountain-guide" className="hidden font-semibold text-forest-800 underline underline-offset-4 hover:text-ember-600 sm:block">
+                All guides
               </Link>
             </div>
             <ul className="mt-8 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">

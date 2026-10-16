@@ -4,7 +4,7 @@ import { ArrowUpRight, Clock } from "lucide-react";
 import { formatPostDate, type BlogPost } from "@/lib/blog";
 
 export function PostCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
-  const href = `/blog/${post.slug}`;
+  const href = `/smoky-mountain-guide/${post.slug}`;
   return (
     <article
       className={`group overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-forest-900/5 transition-shadow duration-500 hover:shadow-lift ${
@@ -23,7 +23,7 @@ export function PostCard({ post, featured = false }: { post: BlogPost; featured?
         <span className="absolute top-4 left-4 rounded-full bg-cream-50/95 px-3 py-1 text-xs font-bold text-forest-900">{post.category}</span>
       </Link>
       <div className={`flex flex-1 flex-col ${featured ? "justify-center p-8 sm:p-10" : "p-6"}`}>
-        {featured && <p className="eyebrow text-ember-500">Latest story</p>}
+        {featured && <p className="eyebrow text-ember-500">Latest guide</p>}
         <p className={`flex items-center gap-2 text-sm text-ink-600 ${featured ? "mt-3" : ""}`}>
           <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           <span aria-hidden>·</span>
@@ -41,7 +41,7 @@ export function PostCard({ post, featured = false }: { post: BlogPost; featured?
           href={href}
           className={`inline-flex items-center gap-1.5 font-semibold text-forest-900 transition-colors hover:text-ember-600 ${featured ? "mt-8" : "mt-auto pt-5"}`}
         >
-          Read the story
+          Read the guide
           <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
         </Link>
       </div>

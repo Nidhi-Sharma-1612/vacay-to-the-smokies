@@ -19,7 +19,7 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Vacay To The Smokies | Romantic Hot Tub Cabins in Pigeon Forge & Gatlinburg",
   description:
-    "Secluded, pet-friendly cabins for two in the Great Smoky Mountains, with private hot tubs, fireside jacuzzis and forest views minutes from Gatlinburg, Pigeon Forge and Dollywood.",
+    "Secluded, pet-friendly cabins for two in the Great Smoky Mountains, with private hot tubs, fireside Jacuzzis and forest views minutes from Gatlinburg, Pigeon Forge and Dollywood.",
   metadataBase: new URL("https://www.vacaytothesmokies.com"),
   openGraph: {
     title: "Vacay To The Smokies",

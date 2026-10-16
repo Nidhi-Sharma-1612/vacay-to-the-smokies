@@ -21,7 +21,7 @@ export function Footer() {
               className="h-20 w-auto brightness-0 invert"
             />
             <p className="mt-6 max-w-xs leading-relaxed text-mist-200/70">
-              Romantic, pet-friendly hot-tub cabins tucked between Gatlinburg
+              Romantic cabins with private hot tubs, tucked between Gatlinburg
               and Pigeon Forge, Tennessee.
             </p>
             <div className="mt-6 flex gap-3">

@@ -48,13 +48,12 @@ export function Welcome() {
           </Reveal>
           <Reveal delay={0.1}>
             <p className="mt-6 text-lg leading-relaxed text-ink-600">
-              Vacay To The Smokies is a small collection of hand-picked hideaways between Gatlinburg and Pigeon Forge.
-              Every cabin is designed around time together: a private hot tub under the stars, a double jacuzzi beside
-              a crackling fire and a king bed to sink into after a day in the mountains.
+              No crowded resort. No shared hot tub. No rooms you don&apos;t need. Just your own cabin, your own deck and space to slow
+              down.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-ink-600">
-              Choose deep-forest seclusion, or a charming bungalow steps from the Parkway. Either way you&apos;re
-              minutes from the National Park, Dollywood and downtown.
+              Our couples cabins are made for honeymoons, anniversaries, birthdays, spontaneous weekends—or simply a few days away
+              together.
             </p>
           </Reveal>
 
@@ -72,7 +71,7 @@ export function Welcome() {
 
           <Reveal delay={0.3} className="mt-10 flex flex-wrap gap-3">
             <ButtonLink href="#cabins" size="lg">
-              Find your cabin
+              Find Your Cabin
             </ButtonLink>
             <ButtonLink href={site.phoneHref} variant="outline-dark" size="lg">
               Talk to your hosts

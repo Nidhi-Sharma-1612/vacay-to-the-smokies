@@ -26,7 +26,7 @@ export function FeaturedCabins() {
                 Find your <em className="text-ember-600">hideaway</em>
               </>
             }
-            description="Six one-of-a-kind stays, each with a private hot tub. Most are made just for two."
+            description="A hand-picked collection of Smoky Mountain hideaways, each with its own private hot tub. Most are made just for two. Choose a secluded cabin beneath the trees or an in-town bungalow steps from the Pigeon Forge Parkway."
           />
           <div role="tablist" aria-label="Filter cabins" className="flex flex-wrap gap-2">
             {cabinFilters.map((f) => (

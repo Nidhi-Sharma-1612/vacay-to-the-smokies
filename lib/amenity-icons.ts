@@ -1,5 +1,6 @@
 import {
   Armchair,
+  Award,
   Bath,
   BedDouble,
   Beef,
@@ -12,11 +13,13 @@ import {
   DoorOpen,
   Droplets,
   Fan,
+  House,
   Flame,
   Gamepad2,
   Laptop,
   Lightbulb,
   Lock,
+  MapPin,
   Microwave,
   Mountain,
   Music,
@@ -40,6 +43,13 @@ import {
 
 // First match wins, so more specific keywords come first.
 const RULES: [RegExp, LucideIcon][] = [
+  [/guest favorite|top 10%/i, Award],
+  [/a-frame/i, House],
+  [/parkway|in-town|attractions|location/i, MapPin],
+  [/wooded|forest setting/i, Trees],
+  [/string lights|lights/i, Lightbulb],
+  [/sleeping space|king|bed\b/i, BedDouble],
+  [/barn-wood|one-story/i, House],
   [/hot tub/i, Bath],
   [/jacuzzi|jetted/i, Waves],
   [/fire ?pit|fireplace|wood stove/i, Flame],

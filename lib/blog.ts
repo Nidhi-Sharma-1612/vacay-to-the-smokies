@@ -26,7 +26,14 @@ export type BlogPost = {
 
 export const getPost = (slug: string) => blogPosts.find((p) => p.slug === slug);
 
-export const blogCategories = [...new Set(blogPosts.map((p) => p.category))];
+/** Smoky Mountain Guide sections, in display order. A section may be empty until articles are added. */
+export const blogCategories = [
+  "Romantic Smoky Mountain Getaways",
+  "Great Smoky Mountains National Park",
+  "Things to Do in Gatlinburg",
+  "Things to Do in Pigeon Forge",
+  "The Smokies by Season",
+];
 
 export const formatPostDate = (date: string) => format(parseISO(date), "MMMM d, yyyy");
 

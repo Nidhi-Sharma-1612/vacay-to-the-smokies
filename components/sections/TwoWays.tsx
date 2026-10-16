@@ -32,9 +32,10 @@ export function TwoWays() {
           eyebrow="Two ways to escape"
           title={
             <>
-              Deep in the woods, or <em className="text-ember-600">close to it all</em>
+              Deep in the Woods. <em className="text-ember-600">Close to It All.</em>
             </>
           }
+          description="Spend the morning hiking in Great Smoky Mountains National Park, the afternoon exploring Gatlinburg, or the evening enjoying Pigeon Forge. Then come home to your own hot tub beneath the trees. Prefer to be in the middle of everything? Our Firefly Bungalows put you steps from the Pigeon Forge Parkway."
         />
 
         <div className="mt-14 grid gap-7 lg:grid-cols-2">

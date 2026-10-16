@@ -9,6 +9,8 @@ import { TwoWays } from "@/components/sections/TwoWays";
 import { Explore } from "@/components/sections/Explore";
 import { Reviews } from "@/components/sections/Reviews";
 import { FinalCTA } from "@/components/sections/FinalCTA";
+import { HiddenGems } from "@/components/sections/HiddenGems";
+import { BookingDirect } from "@/components/sections/BookingDirect";
 
 export default function Home() {
   return (
@@ -19,11 +21,13 @@ export default function Home() {
         <TrustStrip />
         <Welcome />
         <FeaturedCabins />
+        <HiddenGems />
         <Amenities />
         <TwoWays />
         <Explore />
         <Reviews />
         <FinalCTA />
+        <BookingDirect />
       </main>
       <Footer />
     </>

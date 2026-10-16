@@ -19,17 +19,18 @@ export function FinalCTA() {
         <div className="absolute -bottom-32 -left-20 size-96 rounded-full bg-ember-500/30 blur-3xl" aria-hidden />
 
         <Reveal className="relative max-w-2xl px-8 py-20 sm:px-14 sm:py-28">
-          <p className="eyebrow text-ember-300">Book direct with your hosts</p>
+          <p className="eyebrow text-ember-300">Family-run in East Tennessee</p>
           <h2 className="mt-4 font-serif text-5xl leading-[1.02] font-medium tracking-tight text-balance text-cream-50 sm:text-6xl">
-            Your hideaway is <em className="text-ember-300">waiting</em>
+            Small Cabins. <em className="text-ember-300">Big Memories.</em>
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-cream-50/80">
-            Fall color, winter fires, spring wildflowers: the Smokies are magic in every season. Pick your dates and
-            we&apos;ll have the hot tub ready.
+            Vacay To The Smokies is a family-run East Tennessee cabin company built around a simple idea: A memorable mountain getaway
+            doesn&apos;t have to be the biggest cabin on the mountain. It needs the right setting, thoughtful details and space to enjoy
+            the people you came with.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <ButtonLink href="/cabins" size="lg">
-              Check availability
+              Find Your Cabin
             </ButtonLink>
             <ButtonLink href={site.phoneHref} variant="outline-light" size="lg">
               <Phone className="size-4" aria-hidden />

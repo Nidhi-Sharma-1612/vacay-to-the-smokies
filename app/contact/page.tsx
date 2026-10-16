@@ -23,8 +23,16 @@ const FAQS = [
     a: `Check-in is after ${formatTime(sample.checkIn)} and checkout is by ${formatTime(sample.checkOut)}. Most cabins have self check-in. Access instructions and the exact address are sent before arrival, once online check-in is complete.`,
   },
   {
+    q: "Is booking on this website different from Airbnb or Vrbo?",
+    a: "Reservations made on this website are direct bookings with Vacay To The Smokies. If a reservation is made through Airbnb, Vrbo, Booking.com, Expedia or another third-party platform, the terms, cancellation policy and payment conditions associated with that reservation apply.",
+  },
+  {
     q: "Do I need to complete online check-in?",
-    a: "Yes, every guest does, including Airbnb, Vrbo, Booking.com and Expedia bookings. Before arrival the primary guest signs our online check-in form and provides a valid photo ID, a current selfie and a payment method on file for incidentals. Messages about it come by text from our Guest Services number, 865-375-8621.",
+    a: "Yes. All reservations require completion of our secure online check-in before arrival, regardless of booking channel. The primary guest must complete and sign the form and provide a valid government-issued photo ID, current selfie for identity verification, and a valid payment method on file for incidentals. Completion is required before property access information is provided.",
+  },
+  {
+    q: "Will you text me about my stay?",
+    a: "Guests with existing reservations may receive texts from 865-375-8621 regarding online check-in, arrival information, property access and other important stay information.",
   },
   {
     q: "Can I bring my dog?",
@@ -40,13 +48,13 @@ const FAQS = [
   },
   {
     q: "What is your cancellation policy?",
-    a: "For reservations booked directly with us: cancel more than 30 days before arrival and 50% of the total booking charges are refunded; within 30 days of arrival, no refund is issued. If you booked through Airbnb, Vrbo, Booking.com or Expedia, that platform's cancellation policy applies.",
+    a: "For direct reservations, 50% of total booking charges will be refunded when cancellation is made more than 30 days before arrival. Cancellations made 30 days or less before arrival are non-refundable. Third-party reservations follow the cancellation policy associated with the booking platform.",
   },
 ];
 
 export default function ContactPage() {
   const channels = [
-    { icon: Phone, label: "Call or text", value: site.phone, href: site.phoneHref, note: "The quickest way to reach us" },
+    { icon: Phone, label: "Guest Services · Call or Text", value: "865-375-8621", href: site.phoneHref, note: "Guests with reservations may receive texts from this number about check-in and arrival." },
     { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Great for detailed questions" },
     { icon: MapPin, label: "Where we are", value: site.location, href: "/cabins", note: "Exact addresses are shared after booking" },
   ];

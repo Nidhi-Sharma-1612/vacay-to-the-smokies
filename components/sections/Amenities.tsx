@@ -1,17 +1,15 @@
-import { Bath, BedDouble, Beef, ChefHat, Flame, PawPrint, Waves, Wifi } from "lucide-react";
+import { Bath, BedDouble, ChefHat, Flame, Trees, Waves } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MountainDivider } from "@/components/ui/MountainDivider";
 
 const amenities = [
-  { icon: Bath, title: "Private hot tub", text: "On your own deck, under the trees and the stars." },
-  { icon: Waves, title: "Double jacuzzi", text: "Indoor soaking tubs, many set right beside the fire." },
-  { icon: Flame, title: "Fireplaces", text: "Wood-burning or electric, for cozy nights in." },
-  { icon: BedDouble, title: "King beds", text: "Plush linens, including a Stearns & Foster floating bed." },
-  { icon: ChefHat, title: "Full kitchens", text: "Everything you need to cook a gourmet dinner for two." },
-  { icon: Beef, title: "Firepit & BBQ", text: "String lights, grills and lounge chairs outdoors." },
-  { icon: PawPrint, title: "Pet-friendly", text: "Bring the pup with prior approval and a pet fee." },
-  { icon: Wifi, title: "Fast WiFi", text: "Free 100+ Mbps internet, so you can stream or work." },
+  { icon: Bath, title: "Private Hot Tubs", text: "Your own hot tub on your own deck or patio, never shared." },
+  { icon: Waves, title: "Fireside Double Jacuzzis", text: "Indoor double Jacuzzis, many set right beside the fire." },
+  { icon: BedDouble, title: "King Beds", text: "Including premium Stearns & Foster mattresses in our Hidden Gems." },
+  { icon: Flame, title: "Fireplaces", text: "Wood-burning, gas or electric, depending on the cabin." },
+  { icon: ChefHat, title: "Kitchens", text: "Equipped for breakfast in pajamas or dinner for two." },
+  { icon: Trees, title: "Forest Decks & Porches", text: "Wrap-around decks, porches and porch swings among the trees." },
 ];
 
 export function Amenities() {
@@ -23,13 +21,13 @@ export function Amenities() {
           <div className="lg:sticky lg:top-32 lg:self-start">
             <SectionHeading
               tone="dark"
-              eyebrow="Every stay includes"
+              eyebrow="Cabin comforts"
               title={
                 <>
-                  Comforts that make it <em className="text-ember-300">feel like</em> a getaway
+                  The Comforts <em className="text-ember-300">Our Guests Love</em>
                 </>
               }
-              description="Each cabin is stocked and styled so all you have to bring is each other (and maybe the dog)."
+              description="Amenities vary by property. Explore each cabin to find the retreat that fits your trip."
             />
           </div>
 

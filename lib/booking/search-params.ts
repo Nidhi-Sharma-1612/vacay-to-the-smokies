@@ -17,8 +17,8 @@ function int(value: string | undefined, fallback: number, min: number, max = 20)
 
 /** Parse the shared search params used by the search bar, results page, cabin page and checkout. */
 export function parseSearch(params: RawParams): StaySearch {
-  let checkin = read(params, "checkin");
-  let checkout = read(params, "checkout");
+  let checkin = read(params, "checkin") ?? read(params, "or_arrival");
+  let checkout = read(params, "checkout") ?? read(params, "or_departure");
   // Drop dates that are malformed, in the past, or out of order.
   if (!fromISO(checkin) || checkin! < todayISO()) checkin = undefined;
   if (!checkin || !fromISO(checkout) || nightsBetween(checkin, checkout!) <= 0) checkout = undefined;
@@ -26,9 +26,9 @@ export function parseSearch(params: RawParams): StaySearch {
   return {
     checkin,
     checkout,
-    adults: int(read(params, "adults"), defaultGuests.adults, 1),
-    children: int(read(params, "children"), 0, 0),
-    pets: int(read(params, "pets"), 0, 0, 3),
+    adults: int(read(params, "adults") ?? read(params, "or_adults"), defaultGuests.adults, 1),
+    children: int(read(params, "children") ?? read(params, "or_children"), 0, 0),
+    pets: int(read(params, "pets") ?? read(params, "or_pets"), 0, 0, 3),
     type: type === "forest" || type === "parkway" ? (type as CabinCategory) : undefined,
   };
 }

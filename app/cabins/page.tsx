@@ -13,7 +13,7 @@ import { searchCabins } from "@/lib/booking/service";
 
 export const metadata: Metadata = {
   title: "Search cabins | Vacay To The Smokies",
-  description: "Check live availability and book a romantic hot-tub cabin in Pigeon Forge and Gatlinburg directly with your hosts.",
+  description: "Check live availability and book a romantic cabin with a private hot tub in Pigeon Forge and Gatlinburg directly with your hosts.",
 };
 
 export default async function CabinsPage({ searchParams }: PageProps<"/cabins">) {

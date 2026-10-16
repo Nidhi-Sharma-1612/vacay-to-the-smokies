@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { useIsClient } from "@/lib/hooks";
 
-type Props = { open: boolean; onClose: () => void; title: string; children: React.ReactNode };
+type Props = { open: boolean; onClose: () => void; title: string; children: React.ReactNode; size?: "md" | "2xl" };
 
 /** Bottom sheet on mobile, centered dialog on larger screens. */
-export function Modal({ open, onClose, title, children }: Props) {
+export function Modal({ open, onClose, title, children, size = "2xl" }: Props) {
+  const isClient = useIsClient();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -19,7 +22,7 @@ export function Modal({ open, onClose, title, children }: Props) {
     };
   }, [open, onClose]);
 
-  return (
+  const content = (
     <AnimatePresence>
       {open && (
         <motion.div
@@ -38,7 +41,7 @@ export function Modal({ open, onClose, title, children }: Props) {
             animate={{ y: 0 }}
             exit={{ y: 40 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="max-h-[88svh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-cream-50 sm:rounded-3xl"
+            className={`max-h-[88svh] w-full ${size === "md" ? "max-w-lg" : "max-w-2xl"} overflow-y-auto rounded-t-3xl bg-cream-50 sm:rounded-3xl`}
           >
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-linen-200 bg-cream-50 px-6 py-4 sm:px-8">
               <h2 className="font-serif text-2xl text-forest-900">{title}</h2>
@@ -52,4 +55,7 @@ export function Modal({ open, onClose, title, children }: Props) {
       )}
     </AnimatePresence>
   );
+
+  // Portaled to <body> so it stacks above sheets and transformed parents.
+  return isClient ? createPortal(content, document.body) : null;
 }

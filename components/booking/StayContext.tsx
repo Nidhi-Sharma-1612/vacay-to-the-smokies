@@ -10,6 +10,8 @@ import type { DateRange } from "./DateRangePicker";
 export type BookableCabin = {
   slug: string;
   name: string;
+  /** OwnerRez property key, used by the booking widget. */
+  ownerRezKey: string;
   details: Pick<CabinDetails, "maxGuests" | "childrenAllowed" | "petsAllowed" | "rateRange" | "rating" | "reviewCount">;
 };
 

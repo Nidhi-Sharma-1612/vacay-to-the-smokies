@@ -19,12 +19,14 @@ type Props = {
   variant?: "hero" | "bar";
   /** "modal" opens the date and guest panels centered over the page (used on the hero, where space below is tight). */
   panelMode?: "anchored" | "modal";
+  /** Label for the search button. */
+  submitLabel?: string;
 };
 
 const MAX_GUESTS = Math.max(...cabins.map((c) => c.details.maxGuests));
 
 /** Where-dates-guests search used on the landing hero and the results page. */
-export function SearchBar({ initial, variant = "hero", panelMode = "anchored" }: Props) {
+export function SearchBar({ initial, variant = "hero", panelMode = "anchored", submitLabel = "Check availability" }: Props) {
   const router = useRouter();
   const [where, setWhere] = useState<string>(initial?.type ? `type:${initial.type}` : "");
   const [dates, setDates] = useState<DateRange>({ checkin: initial?.checkin, checkout: initial?.checkout });
@@ -180,7 +182,7 @@ export function SearchBar({ initial, variant = "hero", panelMode = "anchored" }:
         className="flex items-center justify-center gap-2 rounded-2xl bg-ember-500 px-7 py-4 font-semibold text-cream-50 transition-colors hover:bg-ember-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ember-500 lg:rounded-full"
       >
         <Search className="size-5" aria-hidden />
-        Check availability
+        {submitLabel}
       </button>
     </div>
   );

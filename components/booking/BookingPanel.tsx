@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, ChevronDown, Loader2, ShieldCheck, Star, Users, X } from "lucide-react";
+import { CalendarDays, ChevronDown, Loader2, Lock, ShieldCheck, Star, Users, X } from "lucide-react";
+import { Modal } from "@/components/ui/Modal";
 import { formatStayRange, usd } from "@/lib/booking/dates";
 import { guestLabel } from "@/lib/booking/search-params";
+import { OwnerRezBookingWidget } from "./OwnerRezBookingWidget";
 import { DateRangePicker } from "./DateRangePicker";
 import { GuestPicker } from "./GuestPicker";
 import { Popover } from "./Popover";
@@ -17,6 +19,7 @@ type Panel = "dates" | "guests" | null;
 function BookingForm() {
   const { cabin, dates, setDates, guests, setGuests, calendar, calendarError, stay, problem, quote } = useStay();
   const [panel, setPanel] = useState<Panel>(null);
+  const [booking, setBooking] = useState(false);
   const close = () => setPanel(null);
 
   const ready = quote.status === "ready";
@@ -24,12 +27,13 @@ function BookingForm() {
   // Unavailable dates turn the main button into a shortcut back to the calendar instead of a dead end.
   const datesProblem = Boolean(stay && (problem || quote.status === "error"));
 
+  // Booking itself happens in OwnerRez's widget, prefilled with the dates and guests chosen here.
   function bookNow() {
     if (!stay || datesProblem) return setPanel("dates");
-    // TODO: hook up the booking step. Book Now intentionally does nothing for now.
+    setBooking(true);
   }
 
-  const label = !stay ? "Check availability" : datesProblem ? "Change dates" : quote.status === "loading" ? "Checking price…" : "Book Now";
+  const label = !stay ? `Check ${cabin.name} Availability` : datesProblem ? "Change dates" : quote.status === "loading" ? "Checking price…" : "Book Now";
 
   return (
     <div>
@@ -119,6 +123,20 @@ function BookingForm() {
       </button>
       {stay && ready && <p className="mt-3 text-center text-sm text-ink-600">You won&apos;t be charged until the final step.</p>}
 
+      <Modal open={booking} onClose={() => setBooking(false)} title={`Book ${cabin.name}`} size="md">
+        {stay && (
+          <p className="mb-5 rounded-2xl bg-linen-100 px-4 py-3 text-sm text-forest-800">
+            <span className="font-semibold">{formatStayRange(stay.checkin, stay.checkout)}</span> · {guestLabel(stay)}
+          </p>
+        )}
+        <OwnerRezBookingWidget propertyKey={cabin.ownerRezKey} checkin={stay?.checkin} checkout={stay?.checkout} guests={guests} />
+        <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-ink-600">
+          <Lock className="mt-0.5 size-4 shrink-0 text-pine-600" aria-hidden />
+          Book Now takes you to our secure checkout, where the final price, fees and taxes are confirmed before you pay. Prefer to ask first?
+          Use Send Inquiry.
+        </p>
+      </Modal>
+
       {quote.status === "loading" && (
         <div className="mt-6 space-y-3" aria-hidden>
           {[0, 1, 2].map((i) => (
@@ -135,7 +153,7 @@ function BookingForm() {
 
       <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-ink-600">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-pine-600" aria-hidden />
-        Book direct with your hosts. Secure checkout on this site, no booking-platform service fees.
+        Book direct with your hosts, with secure checkout and no booking-platform service fees.
       </p>
     </div>
   );
@@ -168,7 +186,7 @@ function PriceHeading() {
 
 /** Sticky booking card (desktop) + bottom bar and sheet (mobile). */
 export function BookingPanel() {
-  const { quote, dates, problem } = useStay();
+  const { cabin, quote, dates, problem } = useStay();
   const unavailable = Boolean(dates.checkout && (problem || quote.status === "error"));
   const [sheet, setSheet] = useState(false);
 
@@ -220,7 +238,17 @@ export function BookingPanel() {
             onClick={() => setSheet(true)}
             className="shrink-0 rounded-full bg-ember-500 px-5 py-3 font-semibold text-cream-50 hover:bg-ember-600 sm:px-6"
           >
-            {quote.status === "ready" ? "Book Now" : unavailable ? "Change dates" : "Check availability"}
+            {quote.status === "ready" ? (
+              "Book Now"
+            ) : unavailable ? (
+              "Change dates"
+            ) : (
+              <>
+                {/* The cabin-specific label fits from tablet width; phones use the short form. */}
+                <span className="hidden sm:inline">Check {cabin.name} Availability</span>
+                <span className="sm:hidden">Check availability</span>
+              </>
+            )}
           </button>
         </div>
       </div>

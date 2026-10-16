@@ -45,7 +45,7 @@ export function Navbar() {
           />
         </Link>
 
-        <ul className="hidden items-center gap-8 lg:flex">
+        <ul className="hidden items-center gap-6 xl:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <Link
@@ -60,7 +60,7 @@ export function Navbar() {
           ))}
         </ul>
 
-        <div className="hidden items-center gap-5 lg:flex">
+        <div className="hidden items-center gap-5 xl:flex">
           <a
             href={site.phoneHref}
             className={`flex items-center gap-2 text-sm font-semibold transition-colors ${
@@ -76,7 +76,7 @@ export function Navbar() {
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className={`relative z-10 rounded-full p-2 lg:hidden ${solid ? "text-forest-900" : "text-cream-50"}`}
+          className={`relative z-10 rounded-full p-2 xl:hidden ${solid ? "text-forest-900" : "text-cream-50"}`}
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -93,7 +93,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="h-[calc(100svh-5rem)] overflow-y-auto bg-cream-50 px-4 pb-10 lg:hidden"
+            className="h-[calc(100svh-5rem)] overflow-y-auto bg-cream-50 px-4 pb-10 xl:hidden"
           >
             <ul className="flex flex-col divide-y divide-linen-200 border-t border-linen-200">
               {navLinks.map((link, i) => (

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { createElement } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Award, Bath, BedDouble, ChevronRight, KeyRound, MapPin, Navigation, PawPrint, Ruler, Star, Users, Waves } from "lucide-react";
+import { Award, Bath, BedDouble, ChevronRight, MapPin, Navigation, Ruler, Star, Users } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Gallery } from "@/components/cabin/Gallery";
-import { Description } from "@/components/cabin/Description";
 import { Amenities } from "@/components/cabin/Amenities";
 import { CabinActions } from "@/components/cabin/CabinActions";
 import { SectionNav } from "@/components/cabin/SectionNav";
@@ -13,10 +13,10 @@ import { ThingsToKnow } from "@/components/cabin/ThingsToKnow";
 import { BookingPanel } from "@/components/booking/BookingPanel";
 import { StayProvider } from "@/components/booking/StayContext";
 import { ResultCard } from "@/components/booking/ResultCard";
-import { cabins, getCabin, photoUrl, type CabinWithDetails } from "@/data/cabins";
-import { reviews } from "@/data/reviews";
+import { cabins, getCabin, photoUrl } from "@/data/cabins";
 import { site } from "@/data/site";
 import { formatTime } from "@/lib/booking/dates";
+import { amenityIcon } from "@/lib/amenity-icons";
 import { parseSearch, searchQuery } from "@/lib/booking/search-params";
 
 export function generateStaticParams() {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps<"/cabins/[slug]">):
   const cabin = getCabin((await params).slug);
   if (!cabin) return {};
   return {
-    title: `${cabin.name} · ${cabin.tagline} | Vacay To The Smokies`,
+    title: `${cabin.name} · ${cabin.page.headline} | Vacay To The Smokies`,
     description: cabin.description,
     openGraph: { images: [photoUrl(cabin.details.photos[0])] },
   };
@@ -52,21 +52,6 @@ function Section({ id, title, children, intro }: { id: string; title: string; in
   );
 }
 
-/** Three reasons to book, built only from facts in the listing. */
-function highlights(cabin: CabinWithDetails) {
-  const d = cabin.details;
-  const list = [
-    { icon: Bath, title: "Your own private hot tub", text: "Soak under the trees and stars, just steps from your door." },
-  ];
-  if (d.rating >= 4.9)
-    list.push({ icon: Award, title: "One of our top-rated stays", text: `Rated ${d.rating.toFixed(2)} out of 5 by ${d.reviewCount} guests.` });
-  if (d.amenityGroups.some((g) => g.items.some((i) => /jacuzzi/i.test(i))))
-    list.push({ icon: Waves, title: "Jacuzzi tub inside", text: "A deep soak for two without leaving the cabin." });
-  if (d.checkInMethod) list.push({ icon: KeyRound, title: "Self check-in", text: `Arrive on your schedule with a ${d.checkInMethod.toLowerCase()}.` });
-  if (d.petsAllowed) list.push({ icon: PawPrint, title: "Bring your pup", text: "Pets welcome with prior approval and a pet fee." });
-  return list.slice(0, 3);
-}
-
 export default async function CabinPage({ params, searchParams }: PageProps<"/cabins/[slug]">) {
   const cabin = getCabin((await params).slug);
   if (!cabin) notFound();
@@ -77,8 +62,6 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
   const similar = [...cabins.filter((c) => c.slug !== cabin.slug)]
     .sort((a, b) => Number(b.category === cabin.category) - Number(a.category === cabin.category))
     .slice(0, 3);
-  // Reviews written about this cabin first; other cabins fill in until real reviews are loaded.
-  const cabinReviews = [...reviews].sort((a, b) => Number(b.cabin === cabin.name) - Number(a.cabin === cabin.name)).slice(0, 2);
   const [lat, lng] = d.coords ?? [];
   const mapBox = lat && lng ? `${lng - 0.02},${lat - 0.012},${lng + 0.02},${lat + 0.012}` : null;
   const topRated = d.rating >= 4.95;
@@ -97,6 +80,7 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
         cabin={{
           slug: cabin.slug,
           name: cabin.name,
+          ownerRezKey: d.ownerRezKey,
           details: {
             maxGuests: d.maxGuests,
             childrenAllowed: d.childrenAllowed,
@@ -118,9 +102,10 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
           </nav>
 
           <header className="mt-4 mb-7">
-            <p className="eyebrow text-ember-500">{cabin.tagline}</p>
-            <h1 className="mt-2 font-serif text-4xl font-medium tracking-tight text-forest-900 sm:text-5xl">{cabin.name}</h1>
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <h1 className="font-serif text-4xl font-medium tracking-tight text-forest-900 sm:text-5xl">{cabin.name}</h1>
+            <p className="mt-2 font-serif text-xl text-balance text-ember-600 italic sm:text-2xl">{cabin.page.headline}</p>
+            <p className="mt-3 text-sm font-semibold text-forest-800">{cabin.page.subtitle}</p>
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
               <p className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-600">
                 <a href="#reviews" className="flex items-center gap-1 font-semibold text-forest-900 hover:underline">
                   <Star className="size-4 fill-ember-500 text-ember-500" aria-hidden />
@@ -160,23 +145,25 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
                   ))}
                 </ul>
 
-                <ul className="mt-8 space-y-5">
-                  {highlights(cabin).map(({ icon: Icon, title, text }) => (
-                    <li key={title} className="flex gap-4">
-                      <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-forest-900 text-ember-300">
-                        <Icon className="size-5" aria-hidden />
+                <div className="mt-8 space-y-4 text-[1.05rem] leading-relaxed text-ink-600">
+                  {cabin.page.story.map((paragraph, i) => (
+                    <p key={i} className={i === 0 ? "text-lg text-forest-800" : undefined}>
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+
+                <h3 className="mt-10 font-serif text-xl font-medium text-forest-900">Highlights</h3>
+                <ul className="mt-5 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+                  {cabin.page.highlights.map((h) => (
+                    <li key={h} className="flex items-center gap-3">
+                      <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-forest-900 text-ember-300">
+                        {createElement(amenityIcon(h), { className: "size-5", "aria-hidden": true })}
                       </span>
-                      <div>
-                        <p className="font-semibold text-forest-900">{title}</p>
-                        <p className="text-ink-600">{text}</p>
-                      </div>
+                      <span className="font-medium text-forest-900">{h}</span>
                     </li>
                   ))}
                 </ul>
-
-                <div className="mt-10 border-t border-linen-200 pt-10">
-                  <Description blocks={d.description} />
-                </div>
               </Section>
 
               <Section id="sleeping" title="Where you'll sleep" intro={d.sleeping.summary}>
@@ -277,29 +264,6 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
                     </p>
                   )}
                 </div>
-                <ul className="mt-6 grid gap-5 sm:grid-cols-2">
-                  {cabinReviews.map((r) => (
-                    <li key={r.quote} className="flex flex-col rounded-3xl bg-white p-6 ring-1 ring-forest-900/5">
-                      <div className="flex text-ember-500" aria-hidden>
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star key={i} className="size-3.5 fill-current" />
-                        ))}
-                      </div>
-                      <p className="mt-3 flex-1 leading-relaxed text-forest-800">&ldquo;{r.quote}&rdquo;</p>
-                      <div className="mt-5 flex items-center gap-3">
-                        <span className="grid size-10 place-items-center rounded-full bg-linen-100 font-serif text-forest-900">
-                          {r.author.charAt(0)}
-                        </span>
-                        <p className="text-sm leading-tight">
-                          <span className="block font-semibold text-forest-900">{r.author}</span>
-                          <span className="text-ink-600">
-                            {r.date} · {r.cabin}
-                          </span>
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
               </Section>
 
               <div className="flex flex-col items-start justify-between gap-4 rounded-3xl bg-linen-100 p-6 sm:flex-row sm:items-center">

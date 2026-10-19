@@ -2,7 +2,7 @@ import { Bath, Footprints, Heart, MapPin, Users } from "lucide-react";
 
 const items = [
   { icon: Bath, label: "Private Hot Tubs" },
-  { icon: Heart, label: "Romantic Stays for Two" },
+  { icon: Heart, label: "Secluded Romantic Stays for Two" },
   { icon: Users, label: "Family Stays" },
   { icon: Footprints, label: "Walk to the Parkway" },
   { icon: MapPin, label: "Minutes to Gatlinburg & Pigeon Forge" },

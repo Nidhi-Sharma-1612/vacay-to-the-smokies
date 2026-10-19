@@ -22,10 +22,10 @@ export const site = {
 
 export const navLinks = [
   { label: "Cabins", href: "/cabins" },
-  { label: "Hidden Gems", href: "/hidden-gems" },
   { label: "Amenities", href: "/#amenities" },
   { label: "Explore", href: "/#explore" },
   { label: "Reviews", href: "/reviews" },
   { label: "Smoky Mountain Guide", href: "/smoky-mountain-guide" },
+  { label: "Hidden Gems", href: "/hidden-gems" },
   { label: "Contact", href: "/contact" },
 ] as const;

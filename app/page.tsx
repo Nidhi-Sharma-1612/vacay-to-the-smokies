@@ -21,12 +21,12 @@ export default function Home() {
         <TrustStrip />
         <Welcome />
         <FeaturedCabins />
-        <HiddenGems />
         <Amenities />
         <TwoWays />
         <Explore />
         <Reviews />
         <FinalCTA />
+        <HiddenGems />
         <BookingDirect />
       </main>
       <Footer />

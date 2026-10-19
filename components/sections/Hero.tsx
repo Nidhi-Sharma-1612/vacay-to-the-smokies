@@ -49,7 +49,7 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.35, ease }}
             className="mt-5 max-w-5xl font-serif text-[2.75rem] leading-[1.02] font-medium tracking-tight text-balance text-cream-50 sm:text-6xl lg:text-[5.25rem]"
           >
-            <em className="font-normal text-ember-300">Hidden</em> cabins for two in the Great Smoky Mountains
+            Find your <em className="font-normal text-ember-300">place</em> in the Great Smoky Mountains
           </motion.h1>
 
           <motion.div
@@ -58,8 +58,9 @@ export function Hero() {
             transition={{ duration: 0.9, delay: 0.55, ease }}
             className="mt-6 max-w-2xl"
           >
-            <p className="text-lg leading-relaxed text-cream-50/85">
-              Private hot tubs, fireside Jacuzzis and forest views. Feel worlds away while staying minutes from Gatlinburg and Pigeon Forge.
+            <p className="font-serif text-2xl text-cream-50 sm:text-3xl">Hidden in the woods or steps from the Parkway.</p>
+            <p className="mt-3 text-lg leading-relaxed text-cream-50/85">
+              Private hot tubs, romantic retreats and unforgettable Smoky Mountain stays.
             </p>
           </motion.div>
 

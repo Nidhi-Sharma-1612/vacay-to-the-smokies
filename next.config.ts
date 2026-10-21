@@ -4,8 +4,13 @@ import { cabins } from "./data/cabins";
 
 const nextConfig: NextConfig = {
   images: {
-    // Cabin photo galleries are served from OwnerRez's image CDN.
-    remotePatterns: [{ protocol: "https", hostname: "uc.orez.io", pathname: "/i/**" }],
+    remotePatterns: [
+      // Cabin photo galleries are served from OwnerRez's image CDN.
+      { protocol: "https", hostname: "uc.orez.io", pathname: "/i/**" },
+      // Images/video uploaded through the admin panel are served from its
+      // /api/media proxy.
+      { protocol: "https", hostname: "admin.weblaucher.com", pathname: "/api/media/**" },
+    ],
   },
   // Keep links to the old OwnerRez-hosted site working (search engines, emails, OwnerRez widgets).
   // Query strings such as ?or_arrival=…&or_departure=… are carried over and prefill the dates.

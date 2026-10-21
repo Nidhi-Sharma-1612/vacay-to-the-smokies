@@ -218,7 +218,7 @@ export function BookingPanel() {
         <BookingForm />
       </aside>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-linen-200 bg-cream-50/95 px-4 py-3 backdrop-blur-md lg:hidden">
+      <div data-mobile-booking-bar className="fixed inset-x-0 bottom-0 z-40 border-t border-linen-200 bg-cream-50/95 px-4 py-3 backdrop-blur-md lg:hidden">
         <div className="mx-auto flex max-w-xl items-center justify-between gap-4">
           <div className="min-w-0">
             {quote.status === "ready" ? (

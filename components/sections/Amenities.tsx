@@ -2,17 +2,25 @@ import { Bath, BedDouble, ChefHat, Flame, Trees, Waves } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MountainDivider } from "@/components/ui/MountainDivider";
+import { getPageSections, objList, str } from "@/lib/cms";
 
-const amenities = [
-  { icon: Bath, title: "Private Hot Tubs", text: "Your own hot tub on your own deck or patio, never shared." },
-  { icon: Waves, title: "Fireside Double Jacuzzis", text: "Indoor double Jacuzzis, many set right beside the fire." },
-  { icon: BedDouble, title: "King Beds", text: "Including premium Stearns & Foster mattresses in our Hidden Gems." },
-  { icon: Flame, title: "Fireplaces", text: "Wood-burning, gas or electric, depending on the cabin." },
-  { icon: ChefHat, title: "Kitchens", text: "Equipped for breakfast in pajamas or dinner for two." },
-  { icon: Trees, title: "Forest Decks & Porches", text: "Wrap-around decks, porches and porch swings among the trees." },
+// Icons are fixed in code; title/text can be overridden from the admin panel
+// (same order as below).
+const ICONS = [Bath, Waves, BedDouble, Flame, ChefHat, Trees];
+const DEFAULT_AMENITIES = [
+  { title: "Private Hot Tubs", text: "Your own hot tub on your own deck or patio, never shared." },
+  { title: "Fireside Double Jacuzzis", text: "Indoor double Jacuzzis, many set right beside the fire." },
+  { title: "King Beds", text: "Including premium Stearns & Foster mattresses in our Hidden Gems." },
+  { title: "Fireplaces", text: "Wood-burning, gas or electric, depending on the cabin." },
+  { title: "Kitchens", text: "Equipped for breakfast in pajamas or dinner for two." },
+  { title: "Forest Decks & Porches", text: "Wrap-around decks, porches and porch swings among the trees." },
 ];
 
-export function Amenities() {
+export async function Amenities() {
+  const sections = await getPageSections("home");
+  const a = sections.amenities ?? {};
+  const items = objList(a, "items", ["title", "text"] as const, DEFAULT_AMENITIES);
+  const amenities = ICONS.map((icon, i) => ({ icon, ...(items[i] ?? DEFAULT_AMENITIES[i]) }));
   return (
     <section id="amenities" className="grain relative bg-forest-900 text-cream-50">
       <MountainDivider className="-mt-px rotate-180 text-linen-100" />
@@ -21,13 +29,13 @@ export function Amenities() {
           <div className="lg:sticky lg:top-32 lg:self-start">
             <SectionHeading
               tone="dark"
-              eyebrow="Cabin comforts"
-              title={
-                <>
-                  The Comforts <em className="text-ember-300">Our Guests Love</em>
-                </>
-              }
-              description="Amenities vary by property. Explore each cabin to find the retreat that fits your trip."
+              eyebrow={str(a, "eyebrow", "Cabin comforts")}
+              title={str(a, "heading", "The Comforts Our Guests Love")}
+              description={str(
+                a,
+                "description",
+                "Amenities vary by property. Explore each cabin to find the retreat that fits your trip.",
+              )}
             />
           </div>
 

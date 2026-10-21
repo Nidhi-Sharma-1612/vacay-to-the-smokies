@@ -8,6 +8,7 @@ import { GemVisual } from "@/components/hidden-gems/GemVisual";
 import { ButtonLink } from "@/components/ui/Button";
 import { comingSoon, hiddenGems, RENDERING_DISCLAIMER, RENDERING_LABEL } from "@/data/hidden-gems";
 import { site } from "@/data/site";
+import { getPageSections, getSiteSettings, objList, str, strList } from "@/lib/cms";
 
 const PAGES = { "jade-forest": "jade", "diamond-forest": "diamond" } as const;
 type PageSlug = keyof typeof PAGES;
@@ -24,15 +25,34 @@ function load(slug: string) {
 }
 
 export async function generateMetadata({ params }: PageProps<"/hidden-gems/[slug]">): Promise<Metadata> {
-  const page = load((await params).slug);
+  const slug = (await params).slug;
+  const page = load(slug);
   if (!page) return {};
-  return { title: `${page.copy.title} | Vacay To The Smokies`, description: page.copy.paragraphs[0] };
+  const sections = await getPageSections(slug);
+  const c = sections.comingSoon ?? {};
+  const title = str(c, "title", page.copy.title);
+  const paragraphs = strList(c, "paragraphs", page.copy.paragraphs as unknown as string[]);
+  return { title: `${title} | Vacay To The Smokies`, description: paragraphs[0] };
 }
 
 export default async function ComingSoonPage({ params }: PageProps<"/hidden-gems/[slug]">) {
-  const page = load((await params).slug);
+  const slug = (await params).slug;
+  const page = load(slug);
   if (!page) notFound();
-  const { gem, copy } = page;
+  const { gem } = page;
+  const [sections, settings] = await Promise.all([getPageSections(slug), getSiteSettings()]);
+  const c = sections.comingSoon ?? {};
+  const phone = settings?.phone || site.phone;
+  const phoneHref = phone === site.phone ? site.phoneHref : `tel:${phone.replace(/[^\d+]/g, "")}`;
+  const defaultCopy = page.copy;
+  const copy = {
+    title: str(c, "title", defaultCopy.title),
+    headline: str(c, "headline", defaultCopy.headline),
+    paragraphs: strList(c, "paragraphs", defaultCopy.paragraphs as unknown as string[]),
+    featuresLabel: str(c, "featuresLabel", defaultCopy.featuresLabel),
+    features: objList(c, "features", ["item"] as const, defaultCopy.features.map((item) => ({ item }))).map((f) => f.item),
+    status: str(c, "status", defaultCopy.status),
+  };
   const others = hiddenGems.filter((g) => g.key !== gem.key);
 
   return (
@@ -104,8 +124,8 @@ export default async function ComingSoonPage({ params }: PageProps<"/hidden-gems
             </div>
             <div className="flex flex-wrap gap-3">
               <ButtonLink href="/hidden-gems">See all Hidden Gems</ButtonLink>
-              <ButtonLink href={site.phoneHref} variant="outline-light">
-                <Phone className="size-4" aria-hidden /> {site.phone}
+              <ButtonLink href={phoneHref} variant="outline-light">
+                <Phone className="size-4" aria-hidden /> {phone}
               </ButtonLink>
             </div>
           </div>

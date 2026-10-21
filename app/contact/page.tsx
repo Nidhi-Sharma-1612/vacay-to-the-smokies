@@ -8,6 +8,8 @@ import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import { cabins } from "@/data/cabins";
 import { site } from "@/data/site";
 import { formatTime } from "@/lib/booking/dates";
+import { getCmsCabins } from "@/lib/cabin-cms";
+import { getCmsFaqs, getPageSections, getSiteSettings, str } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Contact us | Vacay To The Smokies",
@@ -17,7 +19,8 @@ export const metadata: Metadata = {
 const sample = cabins[0].details;
 
 // Answers drawn from the cabins' published house rules and policies.
-const FAQS = [
+// Shown only if the admin panel's FAQ list (Settings > FAQs) is empty.
+const DEFAULT_FAQS = [
   {
     q: "What are check-in and checkout times?",
     a: `Check-in is after ${formatTime(sample.checkIn)} and checkout is by ${formatTime(sample.checkOut)}. Most cabins have self check-in. Access instructions and the exact address are sent before arrival, once online check-in is complete.`,
@@ -52,11 +55,34 @@ const FAQS = [
   },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [sections, settings, cmsFaqs, cmsCabins] = await Promise.all([
+    getPageSections("contact"),
+    getSiteSettings(),
+    getCmsFaqs(),
+    getCmsCabins(),
+  ]);
+  const intro = sections.intro ?? {};
+  const social = sections.social ?? {};
+  const faqHeading = str(sections.faq ?? {}, "heading", "Frequently asked questions");
+  const FAQS = cmsFaqs?.length ? cmsFaqs.map((f) => ({ q: f.question, a: f.answer })) : DEFAULT_FAQS;
+
+  const phone = settings?.phone || "865-375-8621";
+  const phoneHref = settings?.phone ? `tel:${settings.phone.replace(/[^\d+]/g, "")}` : site.phoneHref;
+  const email = settings?.email || site.email;
+  const location = settings?.address || site.location;
+  const facebookUrl = settings?.socialLinks?.facebook || site.socials.facebook;
+  const instagramUrl = settings?.socialLinks?.instagram || site.socials.instagram;
   const channels = [
-    { icon: Phone, label: "Guest Services · Call or Text", value: "865-375-8621", href: site.phoneHref, note: "Guests with reservations may receive texts from this number about check-in and arrival." },
-    { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Great for detailed questions" },
-    { icon: MapPin, label: "Where we are", value: site.location, href: "/cabins", note: "Exact addresses are shared after booking" },
+    {
+      icon: Phone,
+      label: "Guest Services · Call or Text",
+      value: phone,
+      href: phoneHref,
+      note: "Guests with reservations may receive texts from this number about check-in and arrival.",
+    },
+    { icon: Mail, label: "Email", value: email, href: `mailto:${email}`, note: "Great for detailed questions" },
+    { icon: MapPin, label: "Where we are", value: location, href: "/cabins", note: "Exact addresses are shared after booking" },
   ];
 
   return (
@@ -65,12 +91,16 @@ export default function ContactPage() {
       <main className="min-h-screen pt-20">
         <section className="grain border-b border-linen-200 bg-linen-100">
           <div className="mx-auto max-w-7xl px-4 pt-14 pb-12 sm:px-6 lg:px-8">
-            <p className="eyebrow text-ember-500">Contact</p>
+            <p className="eyebrow text-ember-500">{str(intro, "eyebrow", "Contact")}</p>
             <h1 className="mt-3 max-w-3xl font-serif text-4xl font-medium tracking-tight text-balance text-forest-900 sm:text-5xl">
-              Talk to your <em className="text-ember-600">hosts</em>
+              {str(intro, "heading", "Talk to your hosts")}
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-600">
-              We&apos;re a small, family-run team in the Smokies. Ask us anything, from which cabin suits your trip to where to find the best fall color.
+              {str(
+                intro,
+                "description",
+                "We're a small, family-run team in the Smokies. Ask us anything, from which cabin suits your trip to where to find the best fall color.",
+              )}
             </p>
           </div>
         </section>
@@ -108,11 +138,13 @@ export default function ContactPage() {
             })}
 
             <div className="rounded-3xl bg-forest-900 p-6 text-cream-50">
-              <p className="font-semibold">Follow along</p>
-              <p className="mt-1 text-sm text-mist-200/80">Fall color, new cabins and last-minute openings.</p>
+              <p className="font-semibold">{str(social, "heading", "Follow along")}</p>
+              <p className="mt-1 text-sm text-mist-200/80">
+                {str(social, "description", "Fall color, new cabins and last-minute openings.")}
+              </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <a
-                  href={site.socials.facebook}
+                  href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-cream-50/20 px-4 py-2 text-sm font-semibold transition-colors hover:bg-cream-50/10"
@@ -120,7 +152,7 @@ export default function ContactPage() {
                   <FacebookIcon className="size-4" /> Facebook
                 </a>
                 <a
-                  href={site.socials.instagram}
+                  href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-cream-50/20 px-4 py-2 text-sm font-semibold transition-colors hover:bg-cream-50/10"
@@ -131,12 +163,12 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <ContactForm />
+          <ContactForm cabins={cmsCabins} />
         </section>
 
         <section className="border-t border-linen-200 bg-linen-100/60">
           <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-            <h2 className="text-center font-serif text-3xl font-medium text-forest-900 sm:text-4xl">Frequently asked questions</h2>
+            <h2 className="text-center font-serif text-3xl font-medium text-forest-900 sm:text-4xl">{faqHeading}</h2>
             <div className="mt-10 divide-y divide-linen-200 rounded-3xl bg-white px-6 ring-1 ring-forest-900/5">
               {FAQS.map((f) => (
                 <details key={f.q} className="group py-5">

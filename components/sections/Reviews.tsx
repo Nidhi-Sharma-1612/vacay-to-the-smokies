@@ -4,10 +4,20 @@ import { site } from "@/data/site";
 import { getReviews, isHighlight } from "@/lib/reviews";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
+import { getPageSections, str } from "@/lib/cms";
 
-/** Homepage reviews: live overall rating and recent real reviews from OwnerRez. */
+/**
+ * Homepage reviews: live overall rating and recent real reviews from
+ * OwnerRez. Only the surrounding eyebrow/heading are admin-editable — the
+ * rating, count and review text are real guest data and are never overridden
+ * here, to avoid ever showing a fabricated review or score.
+ */
 export async function Reviews() {
-  const { reviews, total, average } = await getReviews({ pageSize: 30 });
+  const [{ reviews, total, average }, sections] = await Promise.all([
+    getReviews({ pageSize: 30 }),
+    getPageSections("home"),
+  ]);
+  const r = sections.reviewsIntro ?? {};
   const rating = average ?? site.rating;
   const count = total || site.reviewCount;
   const featured = reviews.filter(isHighlight).slice(0, 3);
@@ -17,9 +27,9 @@ export async function Reviews() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <Reveal>
-            <p className="eyebrow text-ember-500">Guest reviews</p>
+            <p className="eyebrow text-ember-500">{str(r, "eyebrow", "Guest reviews")}</p>
             <h2 className="mt-4 font-serif text-4xl leading-[1.08] font-medium tracking-tight text-forest-900 sm:text-5xl">
-              Loved by <em className="text-ember-600">couples &amp; families</em>
+              {str(r, "heading", "Loved by couples & families")}
             </h2>
           </Reveal>
           <Reveal delay={0.1} className="flex items-end gap-5">

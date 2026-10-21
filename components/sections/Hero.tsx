@@ -3,11 +3,26 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
+import type { CabinWithDetails } from "@/data/cabins";
 import { SearchBar } from "@/components/booking/SearchBar";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function Hero() {
+export function Hero({
+  eyebrow = "Gatlinburg · Pigeon Forge · Smoky Mountains",
+  heading = "Find your place in the Great Smoky Mountains",
+  subheading = "Hidden in the woods or steps from the Parkway.",
+  description = "Private hot tubs, romantic retreats and unforgettable Smoky Mountain stays.",
+  image = "/images/hero-smokies.jpg",
+  cabins,
+}: {
+  eyebrow?: string;
+  heading?: string;
+  subheading?: string;
+  description?: string;
+  image?: string;
+  cabins?: CabinWithDetails[];
+}) {
   return (
     <section id="top" className="relative flex min-h-[100svh] flex-col bg-forest-950">
       <div className="absolute inset-0 overflow-hidden">
@@ -18,7 +33,7 @@ export function Hero() {
         transition={{ duration: 14, ease: "easeOut" }}
       >
         <Image
-          src="/images/hero-smokies.jpg"
+          src={image}
           alt="Sunset over the layered ridges of the Great Smoky Mountains"
           fill
           priority
@@ -40,7 +55,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2, ease }}
             className="eyebrow text-ember-300"
           >
-            Gatlinburg · Pigeon Forge · Smoky Mountains
+            {eyebrow}
           </motion.p>
 
           <motion.h1
@@ -49,7 +64,7 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.35, ease }}
             className="mt-5 max-w-5xl font-serif text-[2.75rem] leading-[1.02] font-medium tracking-tight text-balance text-cream-50 sm:text-6xl lg:text-[5.25rem]"
           >
-            Find your <em className="font-normal text-ember-300">place</em> in the Great Smoky Mountains
+            {heading}
           </motion.h1>
 
           <motion.div
@@ -58,10 +73,8 @@ export function Hero() {
             transition={{ duration: 0.9, delay: 0.55, ease }}
             className="mt-6 max-w-2xl"
           >
-            <p className="font-serif text-2xl text-cream-50 sm:text-3xl">Hidden in the woods or steps from the Parkway.</p>
-            <p className="mt-3 text-lg leading-relaxed text-cream-50/85">
-              Private hot tubs, romantic retreats and unforgettable Smoky Mountain stays.
-            </p>
+            <p className="font-serif text-2xl text-cream-50 sm:text-3xl">{subheading}</p>
+            <p className="mt-3 text-lg leading-relaxed text-cream-50/85">{description}</p>
           </motion.div>
 
           <motion.div
@@ -70,7 +83,7 @@ export function Hero() {
             transition={{ duration: 1, delay: 0.7, ease }}
             className="mt-10 w-full text-left"
           >
-            <SearchBar panelMode="modal" submitLabel="Find Your Cabin" />
+            <SearchBar panelMode="modal" submitLabel="Find Your Cabin" cabins={cabins} />
           </motion.div>
         </div>
 

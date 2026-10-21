@@ -13,7 +13,8 @@ import { ThingsToKnow } from "@/components/cabin/ThingsToKnow";
 import { BookingPanel } from "@/components/booking/BookingPanel";
 import { StayProvider } from "@/components/booking/StayContext";
 import { ResultCard } from "@/components/booking/ResultCard";
-import { cabins, getCabin, photoUrl } from "@/data/cabins";
+import { cabins } from "@/data/cabins";
+import { getCmsCabin, getCmsCabins } from "@/lib/cabin-cms";
 import { site } from "@/data/site";
 import { formatTime } from "@/lib/booking/dates";
 import { amenityIcon } from "@/lib/amenity-icons";
@@ -26,12 +27,12 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/cabins/[slug]">): Promise<Metadata> {
-  const cabin = getCabin((await params).slug);
+  const cabin = await getCmsCabin((await params).slug);
   if (!cabin) return {};
   return {
     title: `${cabin.name} · ${cabin.page.headline} | Vacay To The Smokies`,
     description: cabin.description,
-    openGraph: { images: [photoUrl(cabin.details.photos[0])] },
+    openGraph: { images: cabin.details.photos[0] ? [cabin.details.photos[0]] : [] },
   };
 }
 
@@ -55,7 +56,7 @@ function Section({ id, title, children, intro }: { id: string; title: string; in
 }
 
 export default async function CabinPage({ params, searchParams }: PageProps<"/cabins/[slug]">) {
-  const cabin = getCabin((await params).slug);
+  const cabin = await getCmsCabin((await params).slug);
   if (!cabin) notFound();
   const search = parseSearch(await searchParams);
   const d = cabin.details;
@@ -64,9 +65,12 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
   const rating = reviewData.average ?? d.rating;
   const reviewCount = reviewData.total || d.reviewCount;
   const featuredReviews = reviewData.reviews.filter(isHighlight).slice(0, 4);
-  const photos = d.photos.map((id) => photoUrl(id));
+  // Already full URLs (resolved once, at seed time, from the original
+  // OwnerRez photo keys — see lib/cabin-cms.ts) rather than keys needing photoUrl().
+  const photos = d.photos;
   const guestQuery = searchQuery({ checkin: search.checkin, checkout: search.checkout, adults: search.adults, children: search.children, pets: search.pets });
-  const similar = [...cabins.filter((c) => c.slug !== cabin.slug)]
+  const cmsCabins = await getCmsCabins();
+  const similar = [...cmsCabins.filter((c) => c.slug !== cabin.slug)]
     .sort((a, b) => Number(b.category === cabin.category) - Number(a.category === cabin.category))
     .slice(0, 3);
   const [lat, lng] = d.coords ?? [];

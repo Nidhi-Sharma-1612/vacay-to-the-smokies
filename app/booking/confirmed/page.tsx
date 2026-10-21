@@ -8,6 +8,7 @@ import { getCabin } from "@/data/cabins";
 import { site } from "@/data/site";
 import { formatLongDate, formatTime, nightsBetween, usd } from "@/lib/booking/dates";
 import { guestLabel, parseStay } from "@/lib/booking/search-params";
+import { getSiteSettings } from "@/lib/cms";
 
 export const metadata: Metadata = { title: "Booking confirmed | Vacay To The Smokies", robots: { index: false } };
 
@@ -15,6 +16,9 @@ export default async function ConfirmedPage({ searchParams }: PageProps<"/bookin
   const params = await searchParams;
   const stay = parseStay(params);
   const cabin = stay ? getCabin(stay.slug) : undefined;
+  const settings = await getSiteSettings();
+  const phone = settings?.phone || site.phone;
+  const phoneHref = phone === site.phone ? site.phoneHref : `tel:${phone.replace(/[^\d+]/g, "")}`;
   const ref = typeof params.ref === "string" ? params.ref.slice(0, 40) : null;
   const name = typeof params.name === "string" ? params.name.slice(0, 40) : "";
   const total = Number(params.total);
@@ -97,8 +101,8 @@ export default async function ConfirmedPage({ searchParams }: PageProps<"/bookin
                 <MessageSquareText className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />
                 <span>
                   Check-in messages come by text from our Guest Services number,{" "}
-                  <a href={site.phoneHref} className="font-semibold whitespace-nowrap text-forest-900 underline underline-offset-2">
-                    865-375-8621
+                  <a href={phoneHref} className="font-semibold whitespace-nowrap text-forest-900 underline underline-offset-2">
+                    {phone}
                   </a>
                   .
                 </span>
@@ -111,8 +115,8 @@ export default async function ConfirmedPage({ searchParams }: PageProps<"/bookin
                 <Phone className="mt-0.5 size-5 shrink-0 text-ember-500" aria-hidden />
                 <span className="min-w-0">
                   Questions? Call{" "}
-                  <a href={site.phoneHref} className="font-semibold text-forest-900 underline underline-offset-2">
-                    {site.phone}
+                  <a href={phoneHref} className="font-semibold text-forest-900 underline underline-offset-2">
+                    {phone}
                   </a>{" "}
                   or email{" "}
                   <a href={`mailto:${site.email}`} className="font-semibold [overflow-wrap:anywhere] text-forest-900 underline underline-offset-2">

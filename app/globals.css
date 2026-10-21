@@ -184,6 +184,13 @@ body {
   }
 }
 
+/* Akia chat: lift its launcher above the cabin page's mobile booking bar. */
+@media (max-width: 1023px) {
+  body:has([data-mobile-booking-bar]) .__akia-chat-icon-wrapper {
+    bottom: 96px !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

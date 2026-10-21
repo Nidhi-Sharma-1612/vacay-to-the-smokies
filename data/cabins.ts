@@ -13,6 +13,8 @@ export type Cabin = {
   size: string;
   baths: number;
   sleeps: number;
+  /** Card's bottom-left tag (e.g. "Secluded forest"); defaults from `category` when unset. */
+  categoryLabel?: string;
   badge?: { label: string; tone: "rose" | "ember" | "cream" };
   /** Three short features shown as chips on cabin cards. */
   highlights: string[];

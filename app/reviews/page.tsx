@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
 import { cabins, getCabin } from "@/data/cabins";
 import { getReviews, reviewPropertyIds } from "@/lib/reviews";
+import { getPageSections, str } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Guest Reviews | Vacay To The Smokies",
@@ -16,7 +17,11 @@ export default async function ReviewsPage({ searchParams }: PageProps<"/reviews"
   const params = await searchParams;
   const cabinSlug = typeof params.cabin === "string" && params.cabin in reviewPropertyIds ? params.cabin : undefined;
   const page = Math.max(1, Number.parseInt(typeof params.page === "string" ? params.page : "1", 10) || 1);
-  const { reviews, total, average, pages } = await getReviews({ cabinSlug, page });
+  const [{ reviews, total, average, pages }, sections] = await Promise.all([
+    getReviews({ cabinSlug, page }),
+    getPageSections("reviews"),
+  ]);
+  const intro = sections.intro ?? {};
   const cabin = cabinSlug ? getCabin(cabinSlug) : undefined;
   const href = (p: { cabin?: string; page?: number }) => {
     const q = new URLSearchParams();
@@ -32,9 +37,9 @@ export default async function ReviewsPage({ searchParams }: PageProps<"/reviews"
       <main className="min-h-screen pt-20">
         <section className="grain border-b border-linen-200 bg-linen-100">
           <div className="mx-auto max-w-7xl px-4 pt-14 pb-12 sm:px-6 lg:px-8">
-            <p className="eyebrow text-ember-500">Guest reviews</p>
+            <p className="eyebrow text-ember-500">{str(intro, "eyebrow", "Guest reviews")}</p>
             <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-forest-900 sm:text-5xl">
-              {cabin ? `${cabin.name} reviews` : "What our guests say"}
+              {cabin ? `${cabin.name} reviews` : str(intro, "heading", "What our guests say")}
             </h1>
             {average !== null && (
               <p className="mt-5 flex items-center gap-3 text-lg text-ink-600">

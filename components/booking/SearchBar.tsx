@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarDays, ChevronDown, Home, Search, Users } from "lucide-react";
-import { cabins } from "@/data/cabins";
+import { cabins as defaultCabins, type CabinWithDetails } from "@/data/cabins";
 import { useAvailability } from "@/lib/booking/client";
 import { formatStayRange } from "@/lib/booking/dates";
 import { defaultGuests, guestLabel, searchQuery } from "@/lib/booking/search-params";
@@ -21,12 +21,14 @@ type Props = {
   panelMode?: "anchored" | "modal";
   /** Label for the search button. */
   submitLabel?: string;
+  /** CMS-merged cabins, so an admin-edited cabin name shows here too; defaults to the static list. */
+  cabins?: CabinWithDetails[];
 };
 
-const MAX_GUESTS = Math.max(...cabins.map((c) => c.details.maxGuests));
+const MAX_GUESTS = Math.max(...defaultCabins.map((c) => c.details.maxGuests));
 
 /** Where-dates-guests search used on the landing hero and the results page. */
-export function SearchBar({ initial, variant = "hero", panelMode = "anchored", submitLabel = "Check availability" }: Props) {
+export function SearchBar({ initial, variant = "hero", panelMode = "anchored", submitLabel = "Check availability", cabins = defaultCabins }: Props) {
   const router = useRouter();
   const [where, setWhere] = useState<string>(initial?.type ? `type:${initial.type}` : "");
   const [dates, setDates] = useState<DateRange>({ checkin: initial?.checkin, checkout: initial?.checkout });

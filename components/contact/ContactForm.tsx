@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
-import { cabins } from "@/data/cabins";
+import { cabins as defaultCabins, type CabinWithDetails } from "@/data/cabins";
 import { site } from "@/data/site";
 
 const TOPICS = ["Booking question", "Pets & special requests", "Celebrating an occasion", "Current reservation", "Something else"];
@@ -25,7 +25,7 @@ function Field({ label, error, optional, children }: { label: string; error?: st
   );
 }
 
-export function ContactForm() {
+export function ContactForm({ cabins = defaultCabins }: { cabins?: CabinWithDetails[] }) {
   const [values, setValues] = useState<Record<FieldName, string>>({ name: "", email: "", phone: "", topic: TOPICS[0], cabin: "", dates: "", message: "" });
   const [company, setCompany] = useState(""); // honeypot
   const [errors, setErrors] = useState<Errors>({});

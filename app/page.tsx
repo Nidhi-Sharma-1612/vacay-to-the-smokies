@@ -11,16 +11,41 @@ import { Reviews } from "@/components/sections/Reviews";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { HiddenGems } from "@/components/sections/HiddenGems";
 import { BookingDirect } from "@/components/sections/BookingDirect";
+import { getCmsCabins } from "@/lib/cabin-cms";
+import { getPageSections, img, str } from "@/lib/cms";
 
-export default function Home() {
+export default async function Home() {
+  const [cabins, sections] = await Promise.all([getCmsCabins(), getPageSections("home")]);
+  const hero = sections.hero ?? {};
+  const cabinsIntro = sections.cabinsIntro ?? {};
   return (
     <>
       <Navbar />
       <main>
-        <Hero />
+        <Hero
+          eyebrow={str(hero, "eyebrow", "Gatlinburg · Pigeon Forge · Smoky Mountains")}
+          heading={str(hero, "heading", "Find your place in the Great Smoky Mountains")}
+          subheading={str(hero, "subheading", "Hidden in the woods or steps from the Parkway.")}
+          description={str(
+            hero,
+            "description",
+            "Private hot tubs, romantic retreats and unforgettable Smoky Mountain stays.",
+          )}
+          image={img(hero, "image", "/images/hero-smokies.jpg")}
+          cabins={cabins}
+        />
         <TrustStrip />
         <Welcome />
-        <FeaturedCabins />
+        <FeaturedCabins
+          cabins={cabins}
+          eyebrow={str(cabinsIntro, "eyebrow", "Our cabins")}
+          heading={str(cabinsIntro, "heading", "Find your hideaway")}
+          description={str(
+            cabinsIntro,
+            "description",
+            "A hand-picked collection of Smoky Mountain hideaways, each with its own private hot tub. Most are made just for two. Choose a secluded cabin beneath the trees or an in-town bungalow steps from the Pigeon Forge Parkway.",
+          )}
+        />
         <Amenities />
         <TwoWays />
         <Explore />

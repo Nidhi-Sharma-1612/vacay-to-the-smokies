@@ -3,15 +3,18 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getPageSections, objList, str } from "@/lib/cms";
 
-const ways = [
+const looksLikeUrl = (v: string) => v.startsWith("/") || /^https?:\/\//.test(v);
+
+const DEFAULT_WAYS = [
   {
     href: "/cabins?type=forest#results",
     image: "/images/cabins/just-opened.jpg",
     alt: "A glowing forest cabin at dusk surrounded by fall leaves",
     eyebrow: "For two",
     title: "Secluded in the forest",
-    points: ["Hot tubs overlooking acres of trees", "A-frames & rustic studio cabins", "5 mi to Gatlinburg & Pigeon Forge"],
+    points: "Hot tubs overlooking acres of trees, A-frames & rustic studio cabins, 5 mi to Gatlinburg & Pigeon Forge",
   },
   {
     href: "/cabins?type=parkway#results",
@@ -19,23 +22,35 @@ const ways = [
     alt: "A bubbling hot tub beside a string-lit firepit patio at sunset",
     eyebrow: "For couples & small groups",
     title: "Steps from the Parkway",
-    points: ["Walk to shows, dining & trolley stops", "Firepits, string lights & hot tubs", "Bungalows sleeping up to 6"],
+    points: "Walk to shows, dining & trolley stops, Firepits, string lights & hot tubs, Bungalows sleeping up to 6",
   },
 ];
 
-export function TwoWays() {
+export async function TwoWays() {
+  const sections = await getPageSections("home");
+  const t = sections.twoWays ?? {};
+  const buttonLabel = str(t, "buttonLabel", "See these cabins");
+  // Hrefs are fixed (they drive the /cabins filter); points are stored as one
+  // comma-separated field per card (the generic admin editor only supports
+  // flat text per row).
+  const items = objList(t, "items", ["image", "eyebrow", "title", "points"] as const, DEFAULT_WAYS);
+  const ways = DEFAULT_WAYS.map((fallback, i) => {
+    const item = items[i] ?? fallback;
+    return { href: fallback.href, alt: fallback.alt, image: looksLikeUrl(item.image) ? item.image : fallback.image, eyebrow: item.eyebrow, title: item.title, points: item.points.split(",").map((s) => s.trim()).filter(Boolean) };
+  });
+
   return (
     <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           align="center"
-          eyebrow="Two ways to escape"
-          title={
-            <>
-              Deep in the Woods. <em className="text-ember-600">Close to It All.</em>
-            </>
-          }
-          description="Spend the morning hiking in Great Smoky Mountains National Park, the afternoon exploring Gatlinburg, or the evening enjoying Pigeon Forge. Then come home to your own hot tub beneath the trees. Prefer to be in the middle of everything? Our Firefly Bungalows put you steps from the Pigeon Forge Parkway."
+          eyebrow={str(t, "eyebrow", "Two ways to escape")}
+          title={str(t, "heading", "Deep in the Woods. Close to It All.")}
+          description={str(
+            t,
+            "description",
+            "Spend the morning hiking in Great Smoky Mountains National Park, the afternoon exploring Gatlinburg, or the evening enjoying Pigeon Forge. Then come home to your own hot tub beneath the trees. Prefer to be in the middle of everything? Our Firefly Bungalows put you steps from the Pigeon Forge Parkway.",
+          )}
         />
 
         <div className="mt-14 grid gap-7 lg:grid-cols-2">
@@ -65,7 +80,7 @@ export function TwoWays() {
                     ))}
                   </ul>
                   <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-cream-50 px-5 py-3 text-sm font-semibold text-forest-900 transition-colors group-hover:bg-ember-500 group-hover:text-cream-50">
-                    See these cabins
+                    {buttonLabel}
                     <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
                   </span>
                 </div>

@@ -1,21 +1,38 @@
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { attractions } from "@/data/attractions";
+import { attractions as defaultAttractions } from "@/data/attractions";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { getPageSections, objList, str } from "@/lib/cms";
 
-export function Explore() {
+const looksLikeUrl = (v: string) => v.startsWith("/") || /^https?:\/\//.test(v);
+
+const ATTRACTION_FALLBACK = defaultAttractions.map((a) => ({
+  name: a.name,
+  distance: a.distance,
+  description: a.description,
+  image: a.image,
+  focus: a.focus ?? "center",
+}));
+
+export async function Explore() {
+  const sections = await getPageSections("home");
+  const e = sections.explore ?? {};
+  const items = objList(e, "items", ["name", "distance", "description", "image", "focus"] as const, ATTRACTION_FALLBACK);
+  const attractions =
+    items.length === ATTRACTION_FALLBACK.length && items.every((i) => looksLikeUrl(i.image)) ? items : ATTRACTION_FALLBACK;
+
   return (
     <section id="explore" className="bg-linen-100 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Explore the Smokies"
-          title={
-            <>
-              Adventure by day, <em className="text-ember-600">hot tub</em> by night
-            </>
-          }
-          description="Our cabins sit right between the National Park and the heart of Pigeon Forge and Gatlinburg, so the best of the Smokies is a short drive (or stroll) away."
+          eyebrow={str(e, "eyebrow", "Explore the Smokies")}
+          title={str(e, "heading", "Adventure by day, hot tub by night")}
+          description={str(
+            e,
+            "description",
+            "Our cabins sit right between the National Park and the heart of Pigeon Forge and Gatlinburg, so the best of the Smokies is a short drive (or stroll) away.",
+          )}
         />
 
         <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

@@ -2,48 +2,72 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { navLinks, site } from "@/data/site";
-import { cabins } from "@/data/cabins";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import { MountainDivider } from "@/components/ui/MountainDivider";
+import { getCmsCabins } from "@/lib/cabin-cms";
+import { getPageSections, getSiteSettings, str } from "@/lib/cms";
 
-export function Footer() {
+export async function Footer() {
+  const [cabins, settings, global] = await Promise.all([
+    getCmsCabins(),
+    getSiteSettings(),
+    getPageSections("global"),
+  ]);
+  const footer = global.footer ?? {};
+
+  const logoUrl = settings?.logoUrl || "/images/logo.png";
+  const tagline = str(
+    footer,
+    "tagline",
+    "Romantic cabins with private hot tubs, tucked between Gatlinburg and Pigeon Forge, Tennessee.",
+  );
+  const phone = settings?.phone || site.phone;
+  const phoneHref = phone === site.phone ? site.phoneHref : `tel:${phone.replace(/[^\d+]/g, "")}`;
+  const email = settings?.email || site.email;
+  const location = settings?.address || site.location;
+  const copyrightName = settings?.copyrightName || site.name;
+  const facebookUrl = settings?.socialLinks?.facebook || site.socials.facebook;
+  const instagramUrl = settings?.socialLinks?.instagram || site.socials.instagram;
+
   return (
     <footer id="contact" className="grain relative bg-forest-950 text-cream-50">
       <MountainDivider className="-mt-px rotate-180 text-cream-50" />
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-10 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <Image
-              src="/images/logo.png"
-              alt={site.name}
-              width={1089}
-              height={539}
-              className="h-20 w-auto brightness-0 invert"
-            />
-            <p className="mt-6 max-w-xs leading-relaxed text-mist-200/70">
-              Romantic cabins with private hot tubs, tucked between Gatlinburg
-              and Pigeon Forge, Tennessee.
-            </p>
-            <div className="mt-6 flex gap-3">
-              <a
-                href={site.socials.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="grid size-10 place-items-center rounded-full border border-cream-50/15 transition-colors hover:border-ember-500 hover:bg-ember-500"
-              >
-                <FacebookIcon className="size-5" />
-              </a>
-              <a
-                href={site.socials.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="grid size-10 place-items-center rounded-full border border-cream-50/15 transition-colors hover:border-ember-500 hover:bg-ember-500"
-              >
-                <InstagramIcon className="size-5" />
-              </a>
-            </div>
+            {settings?.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- CMS-managed URL can be any domain
+              <img src={logoUrl} alt={site.name} className="h-20 w-auto" />
+            ) : (
+              <Image src={logoUrl} alt={site.name} width={1089} height={539} className="h-20 w-auto brightness-0 invert" />
+            )}
+            <p className="mt-6 max-w-xs leading-relaxed text-mist-200/70">{tagline}</p>
+            {(facebookUrl || instagramUrl) && (
+              <div className="mt-6 flex gap-3">
+                {facebookUrl && (
+                  <a
+                    href={facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    className="grid size-10 place-items-center rounded-full border border-cream-50/15 transition-colors hover:border-ember-500 hover:bg-ember-500"
+                  >
+                    <FacebookIcon className="size-5" />
+                  </a>
+                )}
+                {instagramUrl && (
+                  <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="grid size-10 place-items-center rounded-full border border-cream-50/15 transition-colors hover:border-ember-500 hover:bg-ember-500"
+                  >
+                    <InstagramIcon className="size-5" />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           <div>
@@ -91,26 +115,26 @@ export function Footer() {
             <ul className="mt-5 space-y-4">
               <li>
                 <a
-                  href={site.phoneHref}
+                  href={phoneHref}
                   className="flex items-center gap-3 text-mist-200/80 transition-colors hover:text-cream-50"
                 >
                   <Phone
                     className="size-4 shrink-0 text-ember-300"
                     aria-hidden
                   />
-                  {site.phone}
+                  {phone}
                 </a>
               </li>
               <li>
                 <a
-                  href={`mailto:${site.email}`}
+                  href={`mailto:${email}`}
                   className="flex items-center gap-3 break-all text-mist-200/80 transition-colors hover:text-cream-50"
                 >
                   <Mail
                     className="size-4 shrink-0 text-ember-300"
                     aria-hidden
                   />
-                  {site.email}
+                  {email}
                 </a>
               </li>
               <li className="flex items-center gap-3 text-mist-200/80">
@@ -118,7 +142,7 @@ export function Footer() {
                   className="size-4 shrink-0 text-ember-300"
                   aria-hidden
                 />
-                {site.location}
+                {location}
               </li>
             </ul>
             <Link
@@ -132,7 +156,7 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col gap-4 border-t border-cream-50/10 pt-8 text-sm text-mist-400 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {site.name}. All rights reserved.
+            © {new Date().getFullYear()} {copyrightName}. {str(footer, "copyrightNote", "All rights reserved.")}
           </p>
           <a
             href="https://designbydial.com"

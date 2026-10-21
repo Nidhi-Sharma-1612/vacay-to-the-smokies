@@ -10,6 +10,8 @@ import { site } from "@/data/site";
 import { formatStayRange } from "@/lib/booking/dates";
 import { guestLabel, parseSearch, searchQuery } from "@/lib/booking/search-params";
 import { searchCabins } from "@/lib/booking/service";
+import { getCmsCabins } from "@/lib/cabin-cms";
+import { getPageSections, str } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Search cabins | Vacay To The Smokies",
@@ -18,7 +20,15 @@ export const metadata: Metadata = {
 
 export default async function CabinsPage({ searchParams }: PageProps<"/cabins">) {
   const search = parseSearch(await searchParams);
-  const { available, unavailable } = await searchCabins(search);
+  const [{ available, unavailable }, cmsCabins, sections] = await Promise.all([searchCabins(search), getCmsCabins(), getPageSections("cabins-search")]);
+  const intro = sections.intro ?? {};
+  // Swap in the admin-edited name/description/photos/etc for display, while
+  // leaving availability and pricing untouched — those came from OwnerRez via
+  // searchCabins() above and must stay exactly what it computed.
+  const cmsBySlug = new Map(cmsCabins.map((c) => [c.slug, c]));
+  const withCms = <T extends { cabin: { slug: string } }>(r: T) => ({ ...r, cabin: cmsBySlug.get(r.cabin.slug) ?? r.cabin });
+  const availableCms = available.map(withCms);
+  const unavailableCms = unavailable.map(withCms);
   const hasDates = Boolean(search.checkin && search.checkout);
   const stayQuery = (slug?: string) =>
     searchQuery({ checkin: search.checkin, checkout: search.checkout, adults: search.adults, children: search.children, pets: search.pets, cabin: slug });
@@ -30,12 +40,12 @@ export default async function CabinsPage({ searchParams }: PageProps<"/cabins">)
         {/* z-20 keeps the search bar's date and guest dropdowns above the results below. */}
         <section className="grain relative z-20 border-b border-linen-200 bg-linen-100">
           <div className="mx-auto max-w-7xl px-4 pt-12 pb-10 sm:px-6 lg:px-8">
-            <p className="eyebrow text-ember-500">Book direct</p>
+            <p className="eyebrow text-ember-500">{str(intro, "eyebrow", "Book direct")}</p>
             <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-forest-900 sm:text-5xl">
-              Find your <em className="text-ember-600">hideaway</em>
+              {str(intro, "heading", "Find your hideaway")}
             </h1>
             <div className="mt-8">
-              <SearchBar key={JSON.stringify(search)} initial={search} variant="bar" />
+              <SearchBar key={JSON.stringify(search)} initial={search} variant="bar" cabins={cmsCabins} />
             </div>
           </div>
         </section>
@@ -79,7 +89,7 @@ export default async function CabinsPage({ searchParams }: PageProps<"/cabins">)
 
           {available.length > 0 ? (
             <ul className="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-              {available.map((r) => (
+              {availableCms.map((r) => (
                 <li key={r.cabin.slug}>
                   <ResultCard cabin={r.cabin} quote={r.quote} href={`${r.cabin.href}${stayQuery()}`} />
                 </li>
@@ -118,7 +128,7 @@ export default async function CabinsPage({ searchParams }: PageProps<"/cabins">)
               </h2>
               <p className="mt-1 text-ink-600">Open a cabin to see its calendar and pick different dates.</p>
               <ul className="mt-8 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-                {unavailable.map((r) => (
+                {unavailableCms.map((r) => (
                   <li key={r.cabin.slug}>
                     <ResultCard
                       cabin={r.cabin}

@@ -3,6 +3,7 @@ import { BadgeCheck, CalendarX2, Clock, CreditCard, Info, MessageSquareText, Scr
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { site } from "@/data/site";
+import { getPageSections, getSiteSettings, str, strList } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Direct Booking Policies & Good to Know | Vacay To The Smokies",
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
     "Direct booking policies for Vacay To The Smokies: required online check-in, cancellation, check-in times, house rules, payments and privacy.",
 };
 
-// Section copy is the owner's approved wording; keep it verbatim when editing layout.
+// Each section's wording is admin-editable (see getPageSections("policies") below).
+// Section ids/order/icons and the "On this page" nav stay fixed — only the text does.
 const SECTIONS = [
   { id: "direct-vs-third-party", label: "Direct vs. third-party bookings" },
   { id: "online-check-in", label: "Required online check-in" },
@@ -21,8 +23,6 @@ const SECTIONS = [
   { id: "payments", label: "Payments" },
   { id: "privacy", label: "Privacy" },
 ];
-
-const PLATFORMS = "Airbnb, Vrbo, Booking.com, Expedia, or another third-party booking platform";
 
 function Section({ id, icon: Icon, title, badge, children }: { id: string; icon: typeof Info; title: string; badge?: string; children: React.ReactNode }) {
   return (
@@ -52,22 +52,38 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
-const PhoneLink = () => (
-  <a href={site.phoneHref} className="font-semibold whitespace-nowrap text-forest-900 underline underline-offset-2">
-    865-375-8621
-  </a>
-);
+function PhoneLink({ phone, phoneHref }: { phone: string; phoneHref: string }) {
+  return (
+    <a href={phoneHref} className="font-semibold whitespace-nowrap text-forest-900 underline underline-offset-2">
+      {phone}
+    </a>
+  );
+}
 
-export default function PoliciesPage() {
+export default async function PoliciesPage() {
+  const [settings, sections] = await Promise.all([getSiteSettings(), getPageSections("policies")]);
+  const phone = settings?.phone || site.phone;
+  const phoneHref = phone === site.phone ? site.phoneHref : `tel:${phone.replace(/[^\d+]/g, "")}`;
+
+  const hero = sections.hero ?? {};
+  const intro = sections.intro ?? {};
+  const onlineCheckIn = sections.onlineCheckIn ?? {};
+  const guestServices = sections.guestServices ?? {};
+  const cancellation = sections.cancellation ?? {};
+  const checkInCheckout = sections.checkInCheckout ?? {};
+  const houseRules = sections.houseRules ?? {};
+  const payments = sections.payments ?? {};
+  const privacy = sections.privacy ?? {};
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen pt-20">
         <section className="grain border-b border-linen-200 bg-linen-100">
           <div className="mx-auto max-w-6xl px-4 pt-14 pb-12 sm:px-6 lg:px-8">
-            <p className="eyebrow text-ember-500">Good to know</p>
+            <p className="eyebrow text-ember-500">{str(hero, "eyebrow", "Good to know")}</p>
             <h1 className="mt-3 max-w-3xl font-serif text-4xl font-medium tracking-tight text-balance text-forest-900 sm:text-5xl">
-              Direct Booking Policies &amp; Good to Know
+              {str(hero, "heading", "Direct Booking Policies & Good to Know")}
             </h1>
           </div>
         </section>
@@ -89,135 +105,215 @@ export default function PoliciesPage() {
           <article className="max-w-3xl min-w-0">
             <section id="direct-vs-third-party" className="scroll-mt-28 rounded-3xl border border-ember-300/60 bg-ember-500/5 p-6 sm:p-8">
               <p className="flex items-center gap-2 text-sm font-bold tracking-wide text-ember-600 uppercase">
-                <Info className="size-4" aria-hidden /> Important
+                <Info className="size-4" aria-hidden /> {str(intro, "badge", "Important")}
               </p>
-              <h2 className="mt-2 font-serif text-2xl text-forest-900 sm:text-[1.7rem]">Direct Bookings vs. Third-Party Reservations</h2>
+              <h2 className="mt-2 font-serif text-2xl text-forest-900 sm:text-[1.7rem]">
+                {str(intro, "title", "Direct Bookings vs. Third-Party Reservations")}
+              </h2>
               <div className="mt-4 space-y-4 leading-relaxed text-forest-800">
                 <p>
-                  The direct-booking policies below apply only to reservations booked directly with Vacay To The Smokies, including reservations
-                  made through this website.
+                  {str(
+                    intro,
+                    "p1",
+                    "The direct-booking policies below apply only to reservations booked directly with Vacay To The Smokies, including reservations made through this website.",
+                  )}
                 </p>
                 <p>
-                  If you booked through {PLATFORMS}, the policies, terms, cancellation rules, payment requirements, and refund conditions associated
-                  with your reservation on that platform apply. Please refer to your original booking confirmation and the terms displayed by the
-                  platform where you booked.
+                  {str(
+                    intro,
+                    "p2",
+                    "If you booked through Airbnb, Vrbo, Booking.com, Expedia, or another third-party booking platform, the policies, terms, cancellation rules, payment requirements, and refund conditions associated with your reservation on that platform apply. Please refer to your original booking confirmation and the terms displayed by the platform where you booked.",
+                  )}
                 </p>
                 <p>
-                  If there is a difference between the policies below and the policies associated with a reservation made through a third-party
-                  booking platform, the terms applicable to your reservation through that platform will govern.
+                  {str(
+                    intro,
+                    "p3",
+                    "If there is a difference between the policies below and the policies associated with a reservation made through a third-party booking platform, the terms applicable to your reservation through that platform will govern.",
+                  )}
                 </p>
               </div>
             </section>
 
             <div className="mt-10">
-              <Section id="online-check-in" icon={UserCheck} title="Required Online Check-In" badge="All reservations">
-                <p className="font-semibold text-forest-900">This requirement applies to all guests, regardless of where the reservation was booked.</p>
+              <Section
+                id="online-check-in"
+                icon={UserCheck}
+                title={str(onlineCheckIn, "title", "Required Online Check-In")}
+                badge={str(onlineCheckIn, "badge", "All reservations")}
+              >
+                <p className="font-semibold text-forest-900">
+                  {str(onlineCheckIn, "p1", "This requirement applies to all guests, regardless of where the reservation was booked.")}
+                </p>
                 <p>
-                  Before arrival, the primary guest is required to complete and sign our online check-in form. As part of the check-in and
-                  reservation verification process, guests will be required to provide:
+                  {str(
+                    onlineCheckIn,
+                    "p2",
+                    "Before arrival, the primary guest is required to complete and sign our online check-in form. As part of the check-in and reservation verification process, guests will be required to provide:",
+                  )}
                 </p>
                 <Bullets
-                  items={[
+                  items={strList(onlineCheckIn, "bullets", [
                     "A valid government-issued photo ID",
                     "A current selfie for identity verification",
                     "A valid payment method to be kept on file for incidentals",
-                  ]}
+                  ])}
                 />
                 <p className="rounded-2xl bg-linen-100 px-5 py-4 text-forest-800">
-                  Completion of the required online check-in process is a condition of check-in and must be completed before property access
-                  information is provided.
+                  {str(
+                    onlineCheckIn,
+                    "note",
+                    "Completion of the required online check-in process is a condition of check-in and must be completed before property access information is provided.",
+                  )}
                 </p>
                 <p>
-                  This requirement applies to reservations made directly with Vacay To The Smokies as well as reservations made through Airbnb,
-                  Vrbo, Booking.com, Expedia, and other third-party booking platforms.
+                  {str(
+                    onlineCheckIn,
+                    "p3",
+                    "This requirement applies to reservations made directly with Vacay To The Smokies as well as reservations made through Airbnb, Vrbo, Booking.com, Expedia, and other third-party booking platforms.",
+                  )}
                 </p>
               </Section>
 
-              <Section id="guest-services" icon={MessageSquareText} title="Guest Services & Check-In Communications">
+              <Section
+                id="guest-services"
+                icon={MessageSquareText}
+                title={str(guestServices, "title", "Guest Services & Check-In Communications")}
+              >
                 <p>
-                  Our official Guest Services number is <PhoneLink />.
+                  Our official Guest Services number is <PhoneLink phone={phone} phoneHref={phoneHref} />.
                 </p>
                 <p>
-                  Guests may receive text messages or other communications from this number regarding their reservation, required online check-in,
-                  arrival information, property access instructions, and other important information related to their stay.
+                  {str(
+                    guestServices,
+                    "p2",
+                    "Guests may receive text messages or other communications from this number regarding their reservation, required online check-in, arrival information, property access instructions, and other important information related to their stay.",
+                  )}
                 </p>
                 <p>
-                  Please make sure the phone number provided with your reservation is accurate and able to receive messages so that you do not miss
-                  important check-in information.
+                  {str(
+                    guestServices,
+                    "p3",
+                    "Please make sure the phone number provided with your reservation is accurate and able to receive messages so that you do not miss important check-in information.",
+                  )}
                 </p>
               </Section>
 
-              <Section id="cancellation" icon={CalendarX2} title="Cancellation Policy" badge="Direct bookings">
-                <p>For reservations booked directly with Vacay To The Smokies:</p>
+              <Section
+                id="cancellation"
+                icon={CalendarX2}
+                title={str(cancellation, "title", "Cancellation Policy")}
+                badge={str(cancellation, "badge", "Direct bookings")}
+              >
+                <p>{str(cancellation, "p0", "For reservations booked directly with Vacay To The Smokies:")}</p>
                 <dl className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl bg-white p-5 ring-1 ring-forest-900/5">
-                    <dt className="text-sm font-semibold text-ink-600">More than 30 days before arrival</dt>
-                    <dd className="mt-1 text-forest-900">Fifty percent (50%) of the total booking charges will be refunded.</dd>
+                    <dt className="text-sm font-semibold text-ink-600">
+                      {str(cancellation, "period1Label", "More than 30 days before arrival")}
+                    </dt>
+                    <dd className="mt-1 text-forest-900">
+                      {str(cancellation, "period1Text", "Fifty percent (50%) of the total booking charges will be refunded.")}
+                    </dd>
                   </div>
                   <div className="rounded-2xl bg-white p-5 ring-1 ring-forest-900/5">
-                    <dt className="text-sm font-semibold text-ink-600">30 days or less before arrival</dt>
-                    <dd className="mt-1 text-forest-900">No refund will be issued.</dd>
+                    <dt className="text-sm font-semibold text-ink-600">
+                      {str(cancellation, "period2Label", "30 days or less before arrival")}
+                    </dt>
+                    <dd className="mt-1 text-forest-900">{str(cancellation, "period2Text", "No refund will be issued.")}</dd>
                   </div>
                 </dl>
                 <p>
-                  Cancellation policies for reservations made through Airbnb, Vrbo, Booking.com, Expedia, or another third-party platform may be
-                  different. Guests who booked through one of these platforms should refer to the cancellation policy associated with their
-                  reservation before requesting a cancellation.
+                  {str(
+                    cancellation,
+                    "p1",
+                    "Cancellation policies for reservations made through Airbnb, Vrbo, Booking.com, Expedia, or another third-party platform may be different. Guests who booked through one of these platforms should refer to the cancellation policy associated with their reservation before requesting a cancellation.",
+                  )}
                 </p>
               </Section>
 
-              <Section id="check-in-checkout" icon={Clock} title="Check-In & Checkout">
+              <Section id="check-in-checkout" icon={Clock} title={str(checkInCheckout, "title", "Check-In & Checkout")}>
                 <p>
-                  Check-in is after <strong className="text-forest-900">4:00 PM</strong>, and checkout is by{" "}
-                  <strong className="text-forest-900">11:00 AM</strong>.
+                  Check-in is after{" "}
+                  <strong className="text-forest-900">{str(checkInCheckout, "checkInTime", "4:00 PM")}</strong>, and checkout is by{" "}
+                  <strong className="text-forest-900">{str(checkInCheckout, "checkOutTime", "11:00 AM")}</strong>.
                 </p>
                 <p>
-                  Most cabins offer self check-in. Property access information, check-in instructions, and the exact property address are provided
-                  before arrival after completion of any required check-in and verification steps.
+                  {str(
+                    checkInCheckout,
+                    "p1",
+                    "Most cabins offer self check-in. Property access information, check-in instructions, and the exact property address are provided before arrival after completion of any required check-in and verification steps.",
+                  )}
                 </p>
-                <p>Guests who booked through a third-party platform should also review communications provided through that platform.</p>
+                <p>
+                  {str(checkInCheckout, "p2", "Guests who booked through a third-party platform should also review communications provided through that platform.")}
+                </p>
               </Section>
 
-              <Section id="house-rules" icon={ScrollText} title="House Rules">
-                <p>Unless different or additional rules are specifically stated for your property or reservation:</p>
+              <Section id="house-rules" icon={ScrollText} title={str(houseRules, "title", "House Rules")}>
+                <p>{str(houseRules, "intro", "Unless different or additional rules are specifically stated for your property or reservation:")}</p>
                 <Bullets
-                  items={[
+                  items={strList(houseRules, "bullets", [
                     "No smoking, parties, or events.",
                     "The primary renter must be at least 18 years old.",
                     "Pets are welcome at designated pet-friendly properties with prior approval and payment of the applicable pet fee. Pets should be crated when left unattended.",
                     "Maximum occupancy is stated for each property and may not be exceeded.",
                     "Additional property-specific rules may apply and will be provided with your reservation.",
-                  ]}
+                  ])}
                 />
               </Section>
 
-              <Section id="payments" icon={CreditCard} title="Payments" badge="Direct bookings">
+              <Section
+                id="payments"
+                icon={CreditCard}
+                title={str(payments, "title", "Payments")}
+                badge={str(payments, "badge", "Direct bookings")}
+              >
                 <p>
-                  For reservations booked directly with Vacay To The Smokies, Vacay To The Smokies is the merchant of record and charges associated
-                  with your reservation will be processed by Vacay To The Smokies.
+                  {str(
+                    payments,
+                    "p1",
+                    "For reservations booked directly with Vacay To The Smokies, Vacay To The Smokies is the merchant of record and charges associated with your reservation will be processed by Vacay To The Smokies.",
+                  )}
                 </p>
                 <p>
-                  Credit and debit card payments are securely processed through Authorize.net. Vacay To The Smokies does not store your full payment
-                  card number.
+                  {str(
+                    payments,
+                    "p2",
+                    "Credit and debit card payments are securely processed through Authorize.net. Vacay To The Smokies does not store your full payment card number.",
+                  )}
                 </p>
                 <p>
-                  Prices displayed during direct booking checkout include the applicable rent, cleaning fee, approved pet fee, if any, and lodging
-                  taxes.
+                  {str(
+                    payments,
+                    "p3",
+                    "Prices displayed during direct booking checkout include the applicable rent, cleaning fee, approved pet fee, if any, and lodging taxes.",
+                  )}
                 </p>
                 <p>
-                  Reservations made through {PLATFORMS} may have different payment schedules, fees, payment-processing arrangements, and terms.
-                  Please refer to the payment information associated with the platform through which you booked.
+                  {str(
+                    payments,
+                    "p4",
+                    "Reservations made through Airbnb, Vrbo, Booking.com, Expedia, or another third-party booking platform may have different payment schedules, fees, payment-processing arrangements, and terms. Please refer to the payment information associated with the platform through which you booked.",
+                  )}
                 </p>
               </Section>
 
-              <Section id="privacy" icon={ShieldCheck} title="Privacy">
+              <Section id="privacy" icon={ShieldCheck} title={str(privacy, "title", "Privacy")}>
                 <p>
-                  For direct reservations, the information you provide during booking and online check-in—including your name, email address, phone
-                  number, reservation information, identification and other required verification information—is used to manage and verify your
-                  reservation, facilitate check-in, provide your stay, and communicate with you regarding your booking.
+                  {str(
+                    privacy,
+                    "p1",
+                    "For direct reservations, the information you provide during booking and online check-in—including your name, email address, phone number, reservation information, identification and other required verification information—is used to manage and verify your reservation, facilitate check-in, provide your stay, and communicate with you regarding your booking.",
+                  )}
                 </p>
-                <p>Payment card information is securely processed through Authorize.net.</p>
-                <p>Guests who book through a third-party platform are also subject to that platform&apos;s privacy policy and data-handling practices.</p>
+                <p>{str(privacy, "p2", "Payment card information is securely processed through Authorize.net.")}</p>
+                <p>
+                  {str(
+                    privacy,
+                    "p3",
+                    "Guests who book through a third-party platform are also subject to that platform's privacy policy and data-handling practices.",
+                  )}
+                </p>
               </Section>
             </div>
 
@@ -225,8 +321,8 @@ export default function PoliciesPage() {
               <BadgeCheck className="mt-0.5 size-6 shrink-0 text-ember-300" aria-hidden />
               <p className="leading-relaxed text-mist-200/90">
                 For questions regarding your reservation or information, please contact Vacay To The Smokies Guest Services at{" "}
-                <a href={site.phoneHref} className="font-semibold whitespace-nowrap text-cream-50 underline underline-offset-2">
-                  865-375-8621
+                <a href={phoneHref} className="font-semibold whitespace-nowrap text-cream-50 underline underline-offset-2">
+                  {phone}
                 </a>{" "}
                 or{" "}
                 <a href={`mailto:${site.email}`} className="font-semibold [overflow-wrap:anywhere] text-cream-50 underline underline-offset-2">

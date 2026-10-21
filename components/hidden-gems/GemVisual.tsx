@@ -5,13 +5,28 @@ import { RENDERING_LABEL, type HiddenGem } from "@/data/hidden-gems";
 /**
  * Photo for open cabins; for coming-soon cabins, the architectural rendering (always labelled)
  * or, until one is supplied, a styled placeholder in the gem's colors.
+ *
+ * `imageOverride` (admin-edited) takes priority over the cabin's built-in photo/rendering, but
+ * never changes the "coming soon"/rendering label logic below — that's tied to the cabin's
+ * real status, not to which image happens to be showing.
  */
-export function GemVisual({ gem, sizes, priority = false }: { gem: HiddenGem; sizes: string; priority?: boolean }) {
-  const src = gem.image ?? gem.rendering;
+export function GemVisual({
+  gem,
+  sizes,
+  priority = false,
+  imageOverride,
+}: {
+  gem: HiddenGem;
+  sizes: string;
+  priority?: boolean;
+  imageOverride?: string;
+}) {
+  const image = imageOverride ?? gem.image;
+  const src = image ?? gem.rendering;
   return (
     <div className="relative h-full w-full overflow-hidden" style={{ background: `linear-gradient(140deg, ${gem.swatch[0]}, ${gem.swatch[1]})` }}>
       {src ? (
-        <Image src={src} alt={`${gem.name}${gem.rendering && !gem.image ? " architectural rendering" : ""}`} fill sizes={sizes} priority={priority} className={`object-cover ${gem.image ? "" : "object-left-bottom"}`} />
+        <Image src={src} alt={`${gem.name}${gem.rendering && !image ? " architectural rendering" : ""}`} fill sizes={sizes} priority={priority} className={`object-cover ${image ? "" : "object-left-bottom"}`} />
       ) : (
         <div className="absolute inset-0 grid place-items-center text-cream-50/90" aria-hidden>
           <svg viewBox="0 0 200 80" className="absolute bottom-0 w-full text-cream-50/15" preserveAspectRatio="none">

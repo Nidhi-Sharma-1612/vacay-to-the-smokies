@@ -40,10 +40,15 @@ export function formatLongDate(value: string) {
   return d ? format(d, "EEE, MMM d, yyyy") : value;
 }
 
-/** "16:00" -> "4:00 PM" */
+/**
+ * "16:00" -> "4:00 PM". Check-in/out times are admin-editable text (see
+ * lib/cabin-cms.ts), so a malformed value here is reachable, not just a
+ * theoretical bad input — fail soft instead of throwing and 500ing the page.
+ */
 export function formatTime(value: string | null) {
   if (!value) return null;
   const [h, m] = value.split(":").map(Number);
+  if (!Number.isInteger(h) || !Number.isInteger(m) || h < 0 || h > 23 || m < 0 || m > 59) return value;
   return format(new Date(2000, 0, 1, h, m), "h:mm a");
 }
 

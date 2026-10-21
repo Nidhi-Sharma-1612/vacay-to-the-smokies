@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { getCabin } from "@/data/cabins";
+import { getCmsCabin } from "@/lib/cabin-cms";
 import type { GuestReview } from "@/lib/reviews";
 
 type Props = { review: GuestReview; showCabin?: boolean; clamp?: boolean; showResponse?: boolean };
 
 /** A real guest review from OwnerRez, in the site's card style. */
-export function ReviewCard({ review, showCabin = true, clamp = false, showResponse = false }: Props) {
-  const cabin = review.cabinSlug ? getCabin(review.cabinSlug) : undefined;
+export async function ReviewCard({ review, showCabin = true, clamp = false, showResponse = false }: Props) {
+  const cabin = review.cabinSlug ? await getCmsCabin(review.cabinSlug) : undefined;
   return (
     <article className="flex h-full flex-col rounded-3xl bg-white p-6 ring-1 ring-forest-900/5 sm:p-7">
       <div className="flex text-ember-500" aria-label={`${review.stars} out of 5 stars`}>

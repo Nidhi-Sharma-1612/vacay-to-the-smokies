@@ -29,7 +29,7 @@ export function CabinCard({ cabin }: { cabin: Cabin }) {
           </span>
         )}
         <span className="absolute bottom-4 left-4 text-xs font-semibold tracking-[0.18em] text-cream-50 uppercase">
-          {cabin.category === "forest" ? "Secluded forest" : "Walk to the Parkway"}
+          {cabin.categoryLabel ?? (cabin.category === "forest" ? "Secluded forest" : "Walk to the Parkway")}
         </span>
       </Link>
 

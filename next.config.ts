@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
   // Query strings such as ?or_arrival=…&or_departure=… are carried over and prefill the dates.
   async redirects() {
     return [
+      // Permanent bare-domain -> www redirect (Coolify's own www redirect is only temporary).
+      { source: "/:path*", has: [{ type: "host", value: "vacaytothesmokies.com" }], destination: "https://www.vacaytothesmokies.com/:path*", permanent: true },
       // "Blog" became the Smoky Mountain Guide; old /blog URLs (including the original OwnerRez post slugs) still work.
       ...blogPosts.map((p) => ({ source: `/blog/${p.legacySlug}`, destination: `/smoky-mountain-guide/${p.slug}`, permanent: true })),
       { source: "/blog", destination: "/smoky-mountain-guide", permanent: true },

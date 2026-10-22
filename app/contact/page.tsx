@@ -9,7 +9,8 @@ import { cabins } from "@/data/cabins";
 import { site } from "@/data/site";
 import { formatTime } from "@/lib/booking/dates";
 import { getCmsCabins } from "@/lib/cabin-cms";
-import { getCmsFaqs, getPageSections, getSiteSettings, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getCmsFaqs, getPageSections, getSiteSettings, str } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Contact us | Vacay To The Smokies",
@@ -93,7 +94,7 @@ export default async function ContactPage() {
           <div className="mx-auto max-w-7xl px-4 pt-14 pb-12 sm:px-6 lg:px-8">
             <p className="eyebrow text-ember-500">{str(intro, "eyebrow", "Contact")}</p>
             <h1 className="mt-3 max-w-3xl font-serif text-4xl font-medium tracking-tight text-balance text-forest-900 sm:text-5xl">
-              {str(intro, "heading", "Talk to your hosts")}
+              <Accent text={accentStr(intro, "heading", "Talk to your *hosts*")} />
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-600">
               {str(

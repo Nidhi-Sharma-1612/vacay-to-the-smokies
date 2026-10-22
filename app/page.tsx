@@ -12,7 +12,7 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 import { HiddenGems } from "@/components/sections/HiddenGems";
 import { BookingDirect } from "@/components/sections/BookingDirect";
 import { getCmsCabins } from "@/lib/cabin-cms";
-import { getPageSections, img, str } from "@/lib/cms";
+import { accentStr, getPageSections, img, str } from "@/lib/cms";
 
 export default async function Home() {
   const [cabins, sections] = await Promise.all([getCmsCabins(), getPageSections("home")]);
@@ -24,7 +24,7 @@ export default async function Home() {
       <main>
         <Hero
           eyebrow={str(hero, "eyebrow", "Gatlinburg · Pigeon Forge · Smoky Mountains")}
-          heading={str(hero, "heading", "Find your place in the Great Smoky Mountains")}
+          heading={accentStr(hero, "heading", "Find your *place* in the Great Smoky Mountains")}
           subheading={str(hero, "subheading", "Hidden in the woods or steps from the Parkway.")}
           description={str(
             hero,
@@ -39,7 +39,7 @@ export default async function Home() {
         <FeaturedCabins
           cabins={cabins}
           eyebrow={str(cabinsIntro, "eyebrow", "Our cabins")}
-          heading={str(cabinsIntro, "heading", "Find your hideaway")}
+          heading={accentStr(cabinsIntro, "heading", "Find your *hideaway*")}
           description={str(
             cabinsIntro,
             "description",

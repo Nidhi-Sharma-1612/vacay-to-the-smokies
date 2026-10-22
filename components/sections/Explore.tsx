@@ -3,7 +3,8 @@ import { MapPin } from "lucide-react";
 import { attractions as defaultAttractions } from "@/data/attractions";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getPageSections, objList, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, objList, str } from "@/lib/cms";
 
 const looksLikeUrl = (v: string) => v.startsWith("/") || /^https?:\/\//.test(v);
 
@@ -27,7 +28,7 @@ export async function Explore() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow={str(e, "eyebrow", "Explore the Smokies")}
-          title={str(e, "heading", "Adventure by day, hot tub by night")}
+          title={<Accent text={accentStr(e, "heading", "Adventure by day, *hot tub* by night")} />}
           description={str(
             e,
             "description",

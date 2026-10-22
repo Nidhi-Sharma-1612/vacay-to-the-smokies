@@ -6,7 +6,8 @@ import { Footer } from "@/components/layout/Footer";
 import { GemVisual } from "@/components/hidden-gems/GemVisual";
 import { ButtonLink } from "@/components/ui/Button";
 import { hiddenGems } from "@/data/hidden-gems";
-import { getPageSections, objList, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, objList, str } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Hidden Gem Cabin Series | Vacay To The Smokies",
@@ -35,7 +36,7 @@ export default async function HiddenGemsPage() {
           <div className="mx-auto max-w-7xl px-4 pt-14 pb-12 sm:px-6 lg:px-8">
             <p className="eyebrow text-ember-500">{str(h, "eyebrow", "Hidden Gem Cabin Series")}</p>
             <h1 className="mt-3 max-w-3xl font-serif text-4xl font-medium tracking-tight text-balance text-forest-900 sm:text-5xl">
-              {str(h, "heading", "Four Gemstones. Four Cabins. Each Created for Two.")}
+              <Accent text={accentStr(h, "heading", "Four Gemstones. Four Cabins. *Each Created for Two.*")} />
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-relaxed text-ink-600">
               {str(

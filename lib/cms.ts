@@ -72,6 +72,15 @@ export function str(section: Section, key: string, fallback: string): string {
   return typeof value === "string" && value.trim() ? value : fallback;
 }
 
+// A heading with an accent word marked `*like this*` (rendered by <Accent>).
+// Admin-entered text is used as-is, so editors can add or move the markers —
+// except when it is just the default copy without them, which keeps the
+// default's accent instead of falling back to a flat heading.
+export function accentStr(section: Section, key: string, fallback: string): string {
+  const value = str(section, key, fallback);
+  return value === fallback.replace(/\*/g, "") ? fallback : value;
+}
+
 // Like `str`, but an empty string is a valid, deliberate value (e.g. an
 // optional note someone cleared on purpose) — only a genuinely missing key
 // falls back.

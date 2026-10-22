@@ -4,7 +4,8 @@ import { hiddenGems } from "@/data/hidden-gems";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GemVisual } from "@/components/hidden-gems/GemVisual";
-import { getPageSections, img, objList, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, img, objList, str } from "@/lib/cms";
 
 const DEFAULT_CARDS = hiddenGems.map((g) => ({
   gem: g.gem,
@@ -30,7 +31,7 @@ export async function HiddenGems() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             eyebrow={str(h, "eyebrow", "The Hidden Gem Cabin Series")}
-            title={str(h, "heading", "Four Gemstones. Four Cabins. Each Created for Two.")}
+            title={<Accent text={accentStr(h, "heading", "Four Gemstones. Four Cabins. *Each Created for Two.*")} />}
             description={str(
               h,
               "description",

@@ -11,7 +11,8 @@ import { formatStayRange } from "@/lib/booking/dates";
 import { guestLabel, parseSearch, searchQuery } from "@/lib/booking/search-params";
 import { searchCabins } from "@/lib/booking/service";
 import { getCmsCabins } from "@/lib/cabin-cms";
-import { getPageSections, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, str } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Search cabins | Vacay To The Smokies",
@@ -42,7 +43,7 @@ export default async function CabinsPage({ searchParams }: PageProps<"/cabins">)
           <div className="mx-auto max-w-7xl px-4 pt-12 pb-10 sm:px-6 lg:px-8">
             <p className="eyebrow text-ember-500">{str(intro, "eyebrow", "Book direct")}</p>
             <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-forest-900 sm:text-5xl">
-              {str(intro, "heading", "Find your hideaway")}
+              <Accent text={accentStr(intro, "heading", "Find your *hideaway*")} />
             </h1>
             <div className="mt-8">
               <SearchBar key={JSON.stringify(search)} initial={search} variant="bar" cabins={cmsCabins} />

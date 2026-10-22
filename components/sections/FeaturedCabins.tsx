@@ -7,13 +7,14 @@ import { ArrowRight } from "lucide-react";
 import { cabinFilters, type CabinCategory, type CabinWithDetails } from "@/data/cabins";
 import { CabinCard } from "@/components/ui/CabinCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Accent } from "@/components/ui/Accent";
 
 type Filter = "all" | CabinCategory;
 
 export function FeaturedCabins({
   cabins,
   eyebrow = "Our cabins",
-  heading = "Find your hideaway",
+  heading = "Find your *hideaway*",
   description = "A hand-picked collection of Smoky Mountain hideaways, each with its own private hot tub. Most are made just for two. Choose a secluded cabin beneath the trees or an in-town bungalow steps from the Pigeon Forge Parkway.",
 }: {
   cabins: CabinWithDetails[];
@@ -29,7 +30,7 @@ export function FeaturedCabins({
     <section id="cabins" className="bg-linen-100 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
-          <SectionHeading eyebrow={eyebrow} title={heading} description={description} />
+          <SectionHeading eyebrow={eyebrow} title={<Accent text={heading} />} description={description} />
           <div role="tablist" aria-label="Filter cabins" className="flex flex-wrap gap-2">
             {cabinFilters.map((f) => (
               <button

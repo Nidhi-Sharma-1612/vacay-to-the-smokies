@@ -2,7 +2,8 @@ import { Bath, BedDouble, ChefHat, Flame, Trees, Waves } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MountainDivider } from "@/components/ui/MountainDivider";
-import { getPageSections, objList, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, objList, str } from "@/lib/cms";
 
 // Icons are fixed in code; title/text can be overridden from the admin panel
 // (same order as below).
@@ -30,7 +31,7 @@ export async function Amenities() {
             <SectionHeading
               tone="dark"
               eyebrow={str(a, "eyebrow", "Cabin comforts")}
-              title={str(a, "heading", "The Comforts Our Guests Love")}
+              title={<Accent text={accentStr(a, "heading", "The Comforts *Our Guests Love*")} className="text-ember-300" />}
               description={str(
                 a,
                 "description",

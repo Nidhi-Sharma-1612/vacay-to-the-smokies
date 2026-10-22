@@ -4,7 +4,8 @@ import { site } from "@/data/site";
 import { getRatingSummary } from "@/lib/reviews";
 import { Reveal } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
-import { getPageSections, img, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, img, str } from "@/lib/cms";
 
 export async function Welcome() {
   // Live overall rating from OwnerRez, falling back to the saved figures.
@@ -48,7 +49,7 @@ export async function Welcome() {
           <Reveal>
             <p className="eyebrow text-ember-500">{str(w, "eyebrow", "Welcome to the Smokies")}</p>
             <h2 className="mt-4 font-serif text-4xl leading-[1.08] font-medium tracking-tight text-balance text-forest-900 sm:text-5xl">
-              {str(w, "heading", "Romance, tucked into the trees")}
+              <Accent text={accentStr(w, "heading", "Romance, *tucked* into the trees")} />
             </h2>
           </Reveal>
           <Reveal delay={0.1}>

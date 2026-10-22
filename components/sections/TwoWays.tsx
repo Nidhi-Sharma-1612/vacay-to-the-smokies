@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { getPageSections, objList, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, objList, str } from "@/lib/cms";
 
 const looksLikeUrl = (v: string) => v.startsWith("/") || /^https?:\/\//.test(v);
 
@@ -45,7 +46,7 @@ export async function TwoWays() {
         <SectionHeading
           align="center"
           eyebrow={str(t, "eyebrow", "Two ways to escape")}
-          title={str(t, "heading", "Deep in the Woods. Close to It All.")}
+          title={<Accent text={accentStr(t, "heading", "Deep in the Woods. *Close to It All.*")} />}
           description={str(
             t,
             "description",

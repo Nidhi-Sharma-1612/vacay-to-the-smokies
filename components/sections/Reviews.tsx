@@ -4,7 +4,8 @@ import { site } from "@/data/site";
 import { getReviews, isHighlight } from "@/lib/reviews";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
-import { getPageSections, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, str } from "@/lib/cms";
 
 /**
  * Homepage reviews: live overall rating and recent real reviews from
@@ -29,7 +30,7 @@ export async function Reviews() {
           <Reveal>
             <p className="eyebrow text-ember-500">{str(r, "eyebrow", "Guest reviews")}</p>
             <h2 className="mt-4 font-serif text-4xl leading-[1.08] font-medium tracking-tight text-forest-900 sm:text-5xl">
-              {str(r, "heading", "Loved by couples & families")}
+              <Accent text={accentStr(r, "heading", "Loved by *couples & families*")} />
             </h2>
           </Reveal>
           <Reveal delay={0.1} className="flex items-end gap-5">

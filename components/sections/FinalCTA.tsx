@@ -3,7 +3,8 @@ import { Phone } from "lucide-react";
 import { site } from "@/data/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { ButtonLink } from "@/components/ui/Button";
-import { getPageSections, getSiteSettings, img, str } from "@/lib/cms";
+import { Accent } from "@/components/ui/Accent";
+import { accentStr, getPageSections, getSiteSettings, img, str } from "@/lib/cms";
 
 export async function FinalCTA() {
   const [sections, settings] = await Promise.all([getPageSections("home"), getSiteSettings()]);
@@ -26,7 +27,7 @@ export async function FinalCTA() {
         <Reveal className="relative max-w-2xl px-8 py-20 sm:px-14 sm:py-28">
           <p className="eyebrow text-ember-300">{str(c, "eyebrow", "Family-run in East Tennessee")}</p>
           <h2 className="mt-4 font-serif text-5xl leading-[1.02] font-medium tracking-tight text-balance text-cream-50 sm:text-6xl">
-            {str(c, "heading", "Small Cabins. Big Memories.")}
+            <Accent text={accentStr(c, "heading", "Small Cabins. *Big Memories.*")} className="text-ember-300" />
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-cream-50/80">
             {str(

@@ -18,7 +18,7 @@ const CMS_URL = process.env.ADMIN_PANEL_API_URL;
 const CMS_API_KEY = process.env.ADMIN_PANEL_API_KEY;
 const CMS_SITE_SLUG = "vacaytothesmokies";
 
-const cmsFetch = cache(async function cmsFetch<T>(path: string): Promise<T | null> {
+export const cmsFetch = cache(async function cmsFetch<T>(path: string): Promise<T | null> {
   if (!CMS_URL || !CMS_API_KEY) return null;
 
   try {

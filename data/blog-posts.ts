@@ -1,8 +1,28 @@
 // Imported from https://www.vacaytothesmokies.com/blog (OwnerRez site).
-// `legacySlug` is the old URL path, kept so old links can be redirected.
-import type { BlogPost } from "@/lib/blog";
+// Posts now live in the admin panel (see lib/blog-cms.ts) — this static copy
+// only survives so next.config.ts can keep the old OwnerRez post URLs
+// (`legacySlug`) permanently redirecting to their current slug.
+type LegacyBlogText = { text: string; bold?: boolean };
+type LegacyBlogBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; parts: LegacyBlogText[] }
+  | { type: "list"; ordered: boolean; items: LegacyBlogText[][] }
+  | { type: "image"; src: string; alt: string };
+type LegacyBlogPost = {
+  slug: string;
+  legacySlug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  minutes: number;
+  category: string;
+  cabins: string[];
+  cover: string;
+  hero: string;
+  blocks: LegacyBlogBlock[];
+};
 
-export const blogPosts: BlogPost[] = [
+export const blogPosts: LegacyBlogPost[] = [
   {
     "slug": "best-time-to-visit-smokies-fall",
     "cabins": ["emerald-forest", "firefly-bungalow-2"],

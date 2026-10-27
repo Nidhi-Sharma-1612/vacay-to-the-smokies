@@ -4,8 +4,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PostCard } from "@/components/blog/PostCard";
 import { ButtonLink } from "@/components/ui/Button";
-import { blogPosts } from "@/data/blog-posts";
-import { blogCategories } from "@/lib/blog";
+import { getPosts } from "@/lib/blog-cms";
 
 export const metadata: Metadata = {
   title: "Smoky Mountain Guide | Vacay To The Smokies",
@@ -15,8 +14,10 @@ export const metadata: Metadata = {
 
 export default async function GuidePage({ searchParams }: PageProps<"/smoky-mountain-guide">) {
   const { category } = await searchParams;
-  const active = typeof category === "string" && blogCategories.includes(category) ? category : null;
-  const posts = active ? blogPosts.filter((p) => p.category === active) : blogPosts;
+  const allPosts = await getPosts();
+  const categories = Array.from(new Set(allPosts.map((p) => p.category).filter((c): c is string => Boolean(c))));
+  const active = typeof category === "string" && categories.includes(category) ? category : null;
+  const posts = active ? allPosts.filter((p) => p.category === active) : allPosts;
   const [featured, ...rest] = posts;
 
   return (
@@ -40,8 +41,9 @@ export default async function GuidePage({ searchParams }: PageProps<"/smoky-moun
                 romantic getaways for two—so you can spend less time researching and more time enjoying your trip.
               </p>
             </div>
+            {categories.length > 0 && (
             <nav aria-label="Guide sections" className="mt-8 flex flex-wrap gap-2">
-              {[null, ...blogCategories].map((c) => {
+              {[null, ...categories].map((c) => {
                 const isActive = c === active;
                 return (
                   <Link
@@ -58,20 +60,27 @@ export default async function GuidePage({ searchParams }: PageProps<"/smoky-moun
                 );
               })}
             </nav>
+            )}
           </div>
         </section>
 
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           {!featured && (
             <div className="mx-auto max-w-lg rounded-3xl border border-dashed border-linen-200 bg-white px-6 py-14 text-center">
-              <p className="font-serif text-2xl text-forest-900">Guides for this section are on the way</p>
-              <p className="mt-2 text-ink-600">In the meantime, browse the rest of our Smoky Mountain Guide.</p>
-              <Link
-                href="/smoky-mountain-guide"
-                className="mt-6 inline-flex rounded-full bg-forest-900 px-5 py-3 text-sm font-semibold text-cream-50 hover:bg-ember-500"
-              >
-                All guides
-              </Link>
+              <p className="font-serif text-2xl text-forest-900">
+                {allPosts.length === 0 ? "New guides are on the way" : "Guides for this section are on the way"}
+              </p>
+              {allPosts.length > 0 && (
+                <>
+                  <p className="mt-2 text-ink-600">In the meantime, browse the rest of our Smoky Mountain Guide.</p>
+                  <Link
+                    href="/smoky-mountain-guide"
+                    className="mt-6 inline-flex rounded-full bg-forest-900 px-5 py-3 text-sm font-semibold text-cream-50 hover:bg-ember-500"
+                  >
+                    All guides
+                  </Link>
+                </>
+              )}
             </div>
           )}
           {featured && <PostCard post={featured} featured />}

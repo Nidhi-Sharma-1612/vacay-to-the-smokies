@@ -1,50 +1,21 @@
-import { format, parseISO } from "date-fns";
-import { blogPosts } from "@/data/blog-posts";
+import { format } from "date-fns";
 
-export type BlogText = { text: string; bold?: boolean };
-
-export type BlogBlock =
-  | { type: "heading"; text: string }
-  | { type: "paragraph"; parts: BlogText[] }
-  | { type: "list"; ordered: boolean; items: BlogText[][] }
-  | { type: "image"; src: string; alt: string };
-
-export type BlogPost = {
+export type BlogPostSummary = {
   slug: string;
-  legacySlug: string;
   title: string;
-  excerpt: string;
-  date: string; // yyyy-MM-dd
-  minutes: number;
-  category: string;
-  /** Cabin slugs promoted under the post. */
+  excerpt: string | null;
+  coverImage: string | null;
+  category: string | null;
   cabins: string[];
-  cover: string;
-  hero: string;
-  blocks: BlogBlock[];
+  publishedAt: string | null;
 };
 
-export const getPost = (slug: string) => blogPosts.find((p) => p.slug === slug);
+export type BlogPost = BlogPostSummary & {
+  body: string;
+  heroImage: string | null;
+};
 
-/** Smoky Mountain Guide sections, in display order. A section may be empty until articles are added. */
-export const blogCategories = [
-  "Romantic Smoky Mountain Getaways",
-  "Great Smoky Mountains National Park",
-  "Things to Do in Gatlinburg",
-  "Things to Do in Pigeon Forge",
-  "The Smokies by Season",
-];
-
-export const formatPostDate = (date: string) => format(parseISO(date), "MMMM d, yyyy");
-
-/** Other posts to suggest after reading one: same category first, then newest. */
-export function relatedPosts(slug: string, count = 3) {
-  const post = getPost(slug);
-  return blogPosts
-    .filter((p) => p.slug !== slug)
-    .sort((a, b) => Number(b.category === post?.category) - Number(a.category === post?.category))
-    .slice(0, count);
-}
+export const formatPostDate = (date: string | null) => (date ? format(new Date(date), "MMMM d, yyyy") : "");
 
 /** Section headings double as the table of contents; ids are derived from their text. */
 export const headingId = (text: string) =>
@@ -52,3 +23,14 @@ export const headingId = (text: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+
+/** `## `-level headings, in order, for the "In this story" sidebar nav. */
+export function extractHeadings(markdown: string): string[] {
+  return Array.from(markdown.matchAll(/^##\s+(.+)$/gm)).map((m) => m[1].trim());
+}
+
+/** ~200 words/minute, rounded up to the nearest minute (minimum 1). */
+export function estimateReadMinutes(markdown: string): number {
+  const words = markdown.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}

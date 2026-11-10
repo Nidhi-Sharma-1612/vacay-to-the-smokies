@@ -10,6 +10,7 @@ import { Amenities } from "@/components/cabin/Amenities";
 import { CabinActions } from "@/components/cabin/CabinActions";
 import { SectionNav } from "@/components/cabin/SectionNav";
 import { ThingsToKnow } from "@/components/cabin/ThingsToKnow";
+import { DescriptionBlocks } from "@/components/cabin/DescriptionBlocks";
 import { BookingPanel } from "@/components/booking/BookingPanel";
 import { StayProvider } from "@/components/booking/StayContext";
 import { ResultCard } from "@/components/booking/ResultCard";
@@ -156,13 +157,17 @@ export default async function CabinPage({ params, searchParams }: PageProps<"/ca
                   ))}
                 </ul>
 
-                <div className="mt-8 space-y-4 text-[1.05rem] leading-relaxed text-ink-600">
-                  {cabin.page.story.map((paragraph, i) => (
-                    <p key={i} className={i === 0 ? "text-lg text-forest-800" : undefined}>
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+                {cabin.liveDescription ? (
+                  <DescriptionBlocks blocks={cabin.liveDescription} />
+                ) : (
+                  <div className="mt-8 space-y-4 text-[1.05rem] leading-relaxed text-ink-600">
+                    {cabin.page.story.map((paragraph, i) => (
+                      <p key={i} className={i === 0 ? "text-lg text-forest-800" : undefined}>
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                )}
 
                 <h3 className="mt-10 font-serif text-xl font-medium text-forest-900">Highlights</h3>
                 <ul className="mt-5 grid gap-x-6 gap-y-4 sm:grid-cols-2">

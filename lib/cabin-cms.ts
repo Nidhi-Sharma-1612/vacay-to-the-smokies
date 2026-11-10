@@ -2,6 +2,7 @@ import "server-only";
 
 import { cabins as baseCabins, getCabin as getBaseCabin, photoUrl, type CabinWithDetails } from "@/data/cabins";
 import { getPageSections, img, num, objList, str, strList, type Section } from "@/lib/cms";
+import { getListingCopy, type ListingCopy } from "@/lib/ownerrez-listings";
 
 /**
  * Overlays admin-panel content onto a cabin. There's no live property-management
@@ -113,13 +114,24 @@ function mergeCabin(cabin: CabinWithDetails, sections: Record<string, Section>):
   };
 }
 
+/**
+ * Descriptions live in the owner's OwnerRez listings, so when OwnerRez returns them they win over
+ * both the admin panel and the built-in copy — the owner edits them in one place only.
+ */
+function withListing(cabin: CabinWithDetails, listing: ListingCopy): CabinWithDetails {
+  return { ...cabin, description: listing.summary ?? cabin.description, liveDescription: listing.blocks };
+}
+
+async function loadCabin(cabin: CabinWithDetails): Promise<CabinWithDetails> {
+  const [sections, listing] = await Promise.all([getPageSections(cabin.slug), getListingCopy(cabin.slug)]);
+  return withListing(mergeCabin(cabin, sections), listing);
+}
+
 export async function getCmsCabin(slug: string): Promise<CabinWithDetails | undefined> {
   const cabin = getBaseCabin(slug);
-  if (!cabin) return undefined;
-  const sections = await getPageSections(slug);
-  return mergeCabin(cabin, sections);
+  return cabin && loadCabin(cabin);
 }
 
 export async function getCmsCabins(): Promise<CabinWithDetails[]> {
-  return Promise.all(baseCabins.map(async (cabin) => mergeCabin(cabin, await getPageSections(cabin.slug))));
+  return Promise.all(baseCabins.map(loadCabin));
 }

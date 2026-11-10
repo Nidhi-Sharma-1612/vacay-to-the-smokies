@@ -56,7 +56,7 @@ export function CabinCard({ cabin }: { cabin: Cabin }) {
           </li>
         </ul>
 
-        <p className="mt-4 text-[0.95rem] leading-relaxed text-ink-600">{cabin.description}</p>
+        <p className="mt-4 line-clamp-4 text-[0.95rem] leading-relaxed text-ink-600">{cabin.description}</p>
 
         <ul className="mt-5 mb-6 flex flex-wrap gap-2">
           {cabin.highlights.map((h) => (

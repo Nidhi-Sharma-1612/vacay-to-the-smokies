@@ -1,5 +1,5 @@
 import { cabinDetails } from "./cabin-details";
-import type { CabinCategory, CabinDetails } from "@/lib/booking/types";
+import type { CabinCategory, CabinDetails, DescriptionBlock } from "@/lib/booking/types";
 
 export type { CabinCategory };
 
@@ -22,6 +22,8 @@ export type Cabin = {
   description: string;
   /** Owner-approved copy for the cabin page (headline, subtitle line, story and highlight list). */
   page: { headline: string; subtitle: string; story: string[]; highlights: string[] };
+  /** Full description from the live OwnerRez listing; shown in place of `page.story` when present. */
+  liveDescription?: DescriptionBlock[];
   /** Path of this cabin's page on the old OwnerRez-hosted site; redirected to the new page. */
   legacyPath: string;
   /** Travel times quoted in each cabin's own OwnerRez listing. */

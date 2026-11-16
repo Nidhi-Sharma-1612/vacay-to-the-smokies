@@ -115,11 +115,18 @@ function mergeCabin(cabin: CabinWithDetails, sections: Record<string, Section>):
 }
 
 /**
- * Descriptions live in the owner's OwnerRez listings, so when OwnerRez returns them they win over
- * both the admin panel and the built-in copy — the owner edits them in one place only.
+ * Descriptions and photos live in the owner's OwnerRez listings, so when OwnerRez returns them they
+ * win over both the admin panel and the built-in copy — the owner edits them in one place only.
+ * The OwnerRez cover photo (first in the listing) is also the cabin's card image.
  */
 function withListing(cabin: CabinWithDetails, listing: ListingCopy): CabinWithDetails {
-  return { ...cabin, description: listing.summary ?? cabin.description, liveDescription: listing.blocks };
+  return {
+    ...cabin,
+    description: listing.summary ?? cabin.description,
+    liveDescription: listing.blocks,
+    image: listing.photos?.[0] ?? cabin.image,
+    details: { ...cabin.details, photos: listing.photos ?? cabin.details.photos },
+  };
 }
 
 async function loadCabin(cabin: CabinWithDetails): Promise<CabinWithDetails> {

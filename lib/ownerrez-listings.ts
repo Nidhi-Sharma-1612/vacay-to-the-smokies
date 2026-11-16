@@ -4,8 +4,8 @@ import type { DescriptionBlock } from "@/lib/booking/types";
 import { reviewPropertyIds } from "@/lib/reviews";
 
 /**
- * Cabin descriptions pulled live from the owner's OwnerRez listings, so the owner edits them in one
- * place (OwnerRez) and the site restyles them in its own design. Uses the read-only token from the
+ * Cabin descriptions and photos pulled live from the owner's OwnerRez listings, so the owner edits
+ * them in one place (OwnerRez) and the site restyles them in its own design. Uses the read-only token from the
  * owner's own OwnerRez OAuth app. Cached for an hour and refreshed immediately by the OwnerRez
  * webhook (app/api/ownerrez/webhook). Without a token, or if OwnerRez is unreachable, this returns
  * nothing and the site keeps showing its built-in copy.
@@ -18,9 +18,14 @@ export type ListingCopy = {
   summary?: string;
   /** Full description, split into headings, paragraphs and bullets. */
   blocks?: DescriptionBlock[];
+  /** Listing photos in the order set in OwnerRez; the first is the cover. */
+  photos?: string[];
 };
 
-type ListingResponse = { descriptions?: { short_description?: string | null; description?: string | null } };
+type ListingResponse = {
+  descriptions?: { short_description?: string | null; description?: string | null };
+  photos?: { large_url?: string | null }[];
+};
 
 const ENTITIES: Record<string, string> = {
   amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
@@ -76,7 +81,7 @@ async function fetchListing(propertyId: string): Promise<ListingResponse | null>
   const token = process.env.OWNERREZ_ACCESS_TOKEN;
   if (!token) return null;
   try {
-    const res = await fetch(`https://api.ownerrez.com/v2/listings/${propertyId}?includeDescriptions=true`, {
+    const res = await fetch(`https://api.ownerrez.com/v2/listings/${propertyId}?includeDescriptions=true&includePhotos=true`, {
       headers: { Authorization: `Bearer ${token}`, Accept: "application/json", "User-Agent": "VacayToTheSmokies-Website" },
       // The token header would otherwise make this uncached; cache it and let the webhook refresh it.
       cache: "force-cache",
@@ -95,5 +100,6 @@ export async function getListingCopy(slug: string): Promise<ListingCopy> {
   const d = listing?.descriptions;
   const blocks = d?.description ? toBlocks(d.description) : [];
   const summary = d?.short_description ? plain(d.short_description.replace(/<\/p>|<br\s*\/?>/gi, " ")) : "";
-  return { summary: summary || undefined, blocks: blocks.length ? blocks : undefined };
+  const photos = (listing?.photos ?? []).map((p) => p.large_url).filter((url): url is string => !!url);
+  return { summary: summary || undefined, blocks: blocks.length ? blocks : undefined, photos: photos.length ? photos : undefined };
 }
